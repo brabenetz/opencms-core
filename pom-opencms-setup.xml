@@ -1,0 +1,122 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.opencms</groupId>
+	<artifactId>opencms-setup</artifactId>
+	<packaging>jar</packaging>
+	<version>8.0.1</version>
+	<name>opencms-setup</name>
+	<url>http://opencms.org</url>
+
+	<description>
+		opencms-setup is the JAR-Library for OpenCms to make a initial setup or an update.
+	
+		OpenCms is a Content Management System that is based on Open
+		Source Software. Complex Intranet and Internet websites can be
+		quickly and cost-effectively created, maintained and managed.
+	</description>
+	
+	<inceptionYear>2008</inceptionYear>
+
+	<mailingLists>
+		<!-- Example:
+		<mailingList>
+			<name>OpenCms library User Mailing list - How To, FAQ, etc</name>
+			<subscribe>
+				http://lists.sourceforge.net/lists/listinfo/opencms-user
+			</subscribe>
+			<unsubscribe>
+				http://lists.sourceforge.net/lists/listinfo/opencms-user
+			</unsubscribe>
+			<post />
+			<archive>
+				http://sourceforge.net/mailarchive/forum.php?forum=opencms-user
+			</archive>
+		</mailingList>
+		-->
+	</mailingLists>
+
+	<developers>
+		<!-- Example:
+		<developer>
+			<name>Harald Brabenetz</name>
+			<id>brabenetz</id>
+			<email>brabenetz(at)users.sourceforge.net</email>
+			<roles>
+				<role>Developer</role>
+			</roles>
+			<timezone>+1</timezone>
+		</developer>
+		 -->
+	</developers>
+	
+	<contributors>
+	</contributors>
+	
+	<licenses>
+		<license>
+			<name>GNU LESSER GENERAL PUBLIC LICENSE 2.1</name>
+			<url>http://www.gnu.org/licenses/lgpl-2.1.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	
+	<build>
+		<defaultGoal>install</defaultGoal>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.0.2</version>
+				<configuration>
+					<source>1.5</source>
+					<target>1.5</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<dependencies>
+		<!--###########################
+			#
+			#   Place here the Library-dependencies for OpenCms
+			#	Possible Scopes: compile, provided, runtime, test
+			#   see http://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html#Dependency_Scope
+			#
+			########################### -->
+	</dependencies>
+
+	<properties>
+		<distribution.htdocs>scp://grzmvn01.infonova.at/srv/maven/repos/content/sourceforge</distribution.htdocs>
+	</properties>
+
+	<repositories>
+		<repository>
+			<id>infonova-opencms-repo</id>
+			<url>http://bp-cms-commons.sourceforge.net/m2repo</url>
+		</repository>
+	</repositories>
+
+
+	<!-- Example (required for Maven-Release-Plugin)
+	<scm>
+		<connection>scm:svn:http://opencms.svn.sourceforge.net/svnroot/opencms/${project.artifactId}/trunk</connection>
+		<developerConnection>scm:svn:https://opencms.svn.sourceforge.net/svnroot/opencms/${project.artifactId}/trunk</developerConnection>
+		<url>http://opencms.svn.sourceforge.net/viewcvs.cgi/opencms/${project.artifactId}/trunk</url>
+	</scm>
+	 -->
+	<!--
+		Example (required for deploy the artifact to the repository, or the generated Site to the www) -->
+	<distributionManagement>
+		<repository>
+			<id>scp-grzmvn01-content-repository</id>
+			<url>${distribution.htdocs}/m2repo</url>
+		</repository>
+		<snapshotRepository>
+			<id>scp-grzmvn01-content-snapshot-repository</id>
+			<url>${distribution.htdocs}/m2snapshot</url>
+		</snapshotRepository>
+		<site>
+			<id>scp-grzmvn01-content-site</id>
+			<url>${distribution.htdocs}/m2site/opencms/${project.artifactId}/${project.version}/</url>
+		</site>
+	</distributionManagement>
+</project>
