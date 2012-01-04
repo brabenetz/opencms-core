@@ -883,7 +883,8 @@
 			<arg value="-Dclassifier=test-sources" />
             <arg value="-Pgpg" />
 		</artifact:mvn>
-    	
+
+		<delete file="pom-opencms-core.xml.asc" failonerror="false" />
     </target>
 	
     <target name="maven-deploy-setup" description="install the OpenCms-Artifacts into the locale Maven Repository">
@@ -920,7 +921,8 @@
 			<arg value="-Dclassifier=javadoc" />
             <arg value="-Pgpg" />
 		</artifact:mvn>
-    	
+
+		<delete file="pom-opencms-setup.xml.asc" failonerror="false" />
     </target>
 	
     <target name="maven-deploy-webapp" description="install the WebApp-Skeleton (without modules) into the locale Maven Repository">
@@ -936,7 +938,8 @@
 			<arg value="-Dfile=${opencms.build}/${app.name}-webapp-${version.number}.war" />
             <arg value="-Pgpg" />
 		</artifact:mvn>
-    	
+
+		<delete file="pom-opencms-webapp.xml.asc" failonerror="false" />
     </target>
 	
     <target name="maven-deploy-new-modules">

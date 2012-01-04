@@ -460,6 +460,19 @@
 				        <jar destfile="${module.output.jar}/${module.name}_${module.version}_sources.jar">
 				        	<zipfileset dir="${module.input.src.shared}" includes="${module.package}/*.*" />
 				        </jar>
+						
+				    	<!-- create Javadoc-Archive for Maven central Repo Distribusion. -->
+				    	<ant antfile="${opencms.input}/doc/javadoc/javadoc-modules.xml" target="javadoc" inheritAll="false">
+				    		<property name="srcdir" 							value="${module.input.src.shared}" />
+				    		<property name="partname" 							value="${module.name}" />
+				    		<property name="module.doc.title" 					value="OpenCms ${module.name} Module API, version ${version.number}" />
+				    		<property name="module.doc.packageinclude" 			value="${module.package}**" />
+					  	</ant>
+
+				    	<delete file="${module.output.jar}/${module.name}_${module.version}_javadoc.jar" failonerror="no"/>
+				        <jar destfile="${module.output.jar}/${module.name}_${module.version}_javadoc.jar">
+				        	<zipfileset dir="${opencms.output}/doc/${module.name}" />
+				        </jar>
 					</then>
 					<else>
 						<if>
@@ -469,7 +482,8 @@
 								<!-- in multishared mode create an empty Source-Archive and update it for each package. -->
 						    	<delete file="${module.output.jar}/${module.name}_${module.version}_sources.jar" failonerror="no"/>
 								<copy file="${opencms.input.warfiles}/update/empty.jar" tofile="${module.output.jar}/${module.name}_${module.version}_sources.jar" />
-								
+
+								<var name="module.doc.packageinclude" value="" />
 								
 								<for list="${module.packages}" param="mpackage" trim="true">
 									<sequential>
@@ -480,6 +494,7 @@
 												<var name="package.dir" value="${package.dir}@{package}/" />
 											</sequential>
 										</for>
+										<var name="module.doc.packageinclude" value="${module.doc.packageinclude}${package.dir}** " />
 										<javac 
 											srcdir="${module.input.src.shared}" 
 											destdir="${module.output.classes}" 
@@ -519,6 +534,19 @@
 										
 									</sequential>
 								</for>
+								
+						    	<!-- create Javadoc-Archive for Maven central Repo Distribusion. -->
+						    	<ant antfile="${opencms.input}/doc/javadoc/javadoc-modules.xml" target="javadoc" inheritAll="false">
+						    		<property name="srcdir" 							value="${module.input.src.shared}" />
+						    		<property name="partname" 							value="${module.name}" />
+						    		<property name="module.doc.title" 					value="OpenCms ${module.name} Module API, version ${version.number}" />
+						    		<property name="module.doc.packageinclude" 			value="${module.doc.packageinclude}" />
+							  	</ant>
+
+						    	<delete file="${module.output.jar}/${module.name}_${module.version}_javadoc.jar" failonerror="no"/>
+						        <jar destfile="${module.output.jar}/${module.name}_${module.version}_javadoc.jar">
+						        	<zipfileset dir="${opencms.output}/doc/${module.name}" />
+						        </jar>
 							</then>
 							<else>
 								<javac 
@@ -557,6 +585,18 @@
 								<mkdir dir="${module.output.jar}" />
 						        <jar destfile="${module.output.jar}/${module.name}_${module.version}_sources.jar">
 						        	<zipfileset dir="${module.input.src.single}" />
+						        </jar>
+								
+						    	<!-- create Javadoc-Archive for Maven central Repo Distribusion. -->
+						    	<ant antfile="${opencms.input}/doc/javadoc/javadoc-modules.xml" target="javadoc" inheritAll="false">
+						    		<property name="srcdir" 							value="${module.input.src.single}" />
+						    		<property name="partname" 							value="${module.name}" />
+						    		<property name="module.doc.title" 					value="OpenCms ${module.name} Module API, version ${version.number}" />
+						    		<property name="module.doc.packageinclude" 			value="**/*" />
+							  	</ant>
+						    	<delete file="${module.output.jar}/${module.name}_${module.version}_javadoc.jar" failonerror="no"/>
+						        <jar destfile="${module.output.jar}/${module.name}_${module.version}_javadoc.jar">
+						        	<zipfileset dir="${opencms.output}/doc/${module.name}" />
 						        </jar>
 							</else>
 						</if>
@@ -826,6 +866,16 @@
 					<arg value="-Dclassifier=sources" />
 		            <arg value="-Pgpg" />
 				</artifact:mvn>
+				<!-- sign and deploy the javadoc artifact -->
+				<artifact:mvn>
+					<arg value="org.apache.maven.plugins:maven-gpg-plugin:1.3:sign-and-deploy-file" />
+					<arg value="-Durl=${maven-staging-repository-url}" />
+					<arg value="-DrepositoryId=${maven-staging-repository-id}" />
+					<arg value="-DpomFile=${module.input}/pom.xml" />
+					<arg value="-Dfile=${module.output.jar}/${module.name}_${module.version}_javadoc.jar" />
+					<arg value="-Dclassifier=javadoc" />
+		            <arg value="-Pgpg" />
+				</artifact:mvn>
 				<!-- sign and deploy the OpenCms-Module ZIP artifact -->
 				<artifact:mvn>
 					<arg value="org.apache.maven.plugins:maven-gpg-plugin:1.3:sign-and-deploy-file" />
@@ -870,6 +920,7 @@
 
 		<delete file="${module.input}/pom.xml" failonerror="false" />
 		<delete file="${module.input}/pom.xml.asc" failonerror="false" />
+		<delete file="${opencms.input.warfiles}/update/empty.jar.asc" failonerror="false" />
     </target>
 
     <target name="maven-deploy-version" depends="maven-read-manifest" description="deploy only if Parameter 'version.number' is the current module.version">
