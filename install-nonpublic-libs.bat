@@ -1,8 +1,5 @@
 echo off
 echo Installing Non-Puplic Libraries to the local Maven-Repository....
-call mvn install:install-file -DgroupId=com.alkacon -DartifactId=alkacon-diff -Dversion=0.9.2 -Dpackaging=jar -Dfile=lib/runtime/alkacon-diff-0.9.2.jar
-call mvn install:install-file -DgroupId=com.alkacon -DartifactId=alkacon-simapi -Dversion=0.9.8 -Dpackaging=jar -Dfile=lib/runtime/alkacon-simapi-0.9.8.jar
-
 
 echo Installing ibm.as400-Driver to the local Maven-Repository....
 call mvn install:install-file -DgroupId=com.ibm.as400 -DartifactId=jt400 -Dversion=6.0 -Dpackaging=jar -Dfile=webapp/setup/database/as400/jt400.jar
@@ -17,7 +14,7 @@ call mvn install:install-file -DgroupId=com.oracle -DartifactId=ojdbc14 -Dversio
 
 
 echo Installing guava-r08-gwt to the local Maven-Repository....
+echo Guava 10 is available in central repo: http://repo2.maven.org/maven2/com/google/guava/guava-gwt/10.0/
 call mvn install:install-file -DgroupId=com.google.guava -DartifactId=guava-gwt -Dversion=r08 -Dpackaging=jar -Dfile=lib/runtime/guava-r08-gwt.jar
-call mvn install:install-file -DgroupId=com.google.guava -DartifactId=guava -Dversion=r08 -Dpackaging=jar -Dclassifier=gwt -Dfile=lib/runtime/guava-r08-gwt.jar
 
 pause
