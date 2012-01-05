@@ -769,17 +769,58 @@
 	    			<then>
 	    				<readxmlproperty property="@{dependency}.module.version" xmlfile="${@{dependency}.input}/resources/manifest.xml" element="export/module/version" />
 
-						<var name="deps" value="${deps}${line.separator}  &lt;dependency&gt;" />
-						<var name="deps" value="${deps}${line.separator}    &lt;groupId&gt;org.opencms.modules&lt;/groupId&gt;" />
-						<var name="deps" value="${deps}${line.separator}    &lt;artifactId&gt;@{dependency}&lt;/artifactId&gt;" />
-	    				<var name="deps" value="${deps}${line.separator}    &lt;version&gt;${@{dependency}.module.version}&lt;/version&gt;" />
-	    				<var name="deps" value="${deps}${line.separator}    &lt;scope&gt;provided&lt;/scope&gt;" />
-	    				<var name="deps" value="${deps}${line.separator}  &lt;/dependency&gt;" />
+						<var name="deps" value="${deps}${line.separator}      &lt;dependency&gt;" />
+						<var name="deps" value="${deps}${line.separator}        &lt;groupId&gt;org.opencms.modules&lt;/groupId&gt;" />
+						<var name="deps" value="${deps}${line.separator}        &lt;artifactId&gt;@{dependency}&lt;/artifactId&gt;" />
+	    				<var name="deps" value="${deps}${line.separator}        &lt;version&gt;${@{dependency}.module.version}&lt;/version&gt;" />
+	    				<var name="deps" value="${deps}${line.separator}        &lt;scope&gt;provided&lt;/scope&gt;" />
+	    				<var name="deps" value="${deps}${line.separator}      &lt;/dependency&gt;" />
+	    				
 	    			</then>
 	    		</if>
 				
 			</sequential>
 		</for>
+
+		<!-- Special Cases: two modules have additional Dependencies -->
+		<if>
+			<equals arg1="${module.name}" arg2="org.opencms.frontend.layoutpage" />
+			<then>
+				<echo message="Add freemarker Dependency to the module ${module.name}" />
+				<var name="deps" value="${deps}${line.separator}      &lt;dependency&gt;" />
+				<var name="deps" value="${deps}${line.separator}        &lt;groupId&gt;freemarker&lt;/groupId&gt;" />
+				<var name="deps" value="${deps}${line.separator}        &lt;artifactId&gt;freemarker&lt;/artifactId&gt;" />
+				<var name="deps" value="${deps}${line.separator}        &lt;version&gt;2.3.6&lt;/version&gt;" />
+				<var name="deps" value="${deps}${line.separator}      &lt;/dependency&gt;" />
+			</then>
+		</if>
+		<if>
+			<equals arg1="${module.name}" arg2="org.opencms.frontend.templateone.form" />
+			<then>
+				<echo message="Add jcaptcha-all Dependency to the module ${module.name}" />
+				<var name="deps" value="${deps}${line.separator}      &lt;dependency&gt;" />
+				<var name="deps" value="${deps}${line.separator}        &lt;!-- In OpenCms this Library is named 'jcaptcha-1.0-all.jar' but it is Version 1.0-RC6 --&gt;" />
+				<var name="deps" value="${deps}${line.separator}        &lt;groupId&gt;com.octo.captcha&lt;/groupId&gt;" />
+				<var name="deps" value="${deps}${line.separator}        &lt;artifactId&gt;jcaptcha-all&lt;/artifactId&gt;" />
+				<var name="deps" value="${deps}${line.separator}        &lt;version&gt;1.0-RC6&lt;/version&gt;" />
+				<var name="deps" value="${deps}${line.separator}        &lt;exclusions&gt;" />
+				<var name="deps" value="${deps}${line.separator}          &lt;exclusion&gt;" />
+				<var name="deps" value="${deps}${line.separator}            &lt;!-- ehcache-core is already included in opencms --&gt;" />
+				<var name="deps" value="${deps}${line.separator}            &lt;groupId&gt;net.sf.ehcache&lt;/groupId&gt;" />
+				<var name="deps" value="${deps}${line.separator}            &lt;artifactId&gt;ehcache&lt;/artifactId&gt;" />
+				<var name="deps" value="${deps}${line.separator}          &lt;/exclusion&gt;" />
+				<var name="deps" value="${deps}${line.separator}          &lt;exclusion&gt;" />
+				<var name="deps" value="${deps}${line.separator}            &lt;groupId&gt;concurrent&lt;/groupId&gt;" />
+				<var name="deps" value="${deps}${line.separator}            &lt;artifactId&gt;concurrent&lt;/artifactId&gt;" />
+				<var name="deps" value="${deps}${line.separator}          &lt;/exclusion&gt;" />
+				<var name="deps" value="${deps}${line.separator}          &lt;exclusion&gt;" />
+				<var name="deps" value="${deps}${line.separator}            &lt;groupId&gt;org.springframework&lt;/groupId&gt;" />
+				<var name="deps" value="${deps}${line.separator}            &lt;artifactId&gt;spring&lt;/artifactId&gt;" />
+				<var name="deps" value="${deps}${line.separator}          &lt;/exclusion&gt;" />
+				<var name="deps" value="${deps}${line.separator}        &lt;/exclusions&gt;" />
+				<var name="deps" value="${deps}${line.separator}      &lt;/dependency&gt;" />
+			</then>
+		</if>
 		
 		<echo message="copy file='${basedir}/pom-template.xml' tofile='${module.input}/pom.xml'"/>
 		<echo message="${module.name} - ${module.version}"/>

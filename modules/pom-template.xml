@@ -101,9 +101,7 @@
 		</dependency>
 		
 		<!-- OpenCms-Module-Dependencies of Module '@OPENCMS_MODULE_NAME@' -->
-		
 		@OPENCMS_MODULE_DEPENDENCIES@
-		
 	</dependencies>
 
 </project>
