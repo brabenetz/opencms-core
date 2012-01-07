@@ -262,6 +262,13 @@
 			<metainf dir="${opencms.input.warfiles}/WEB-INF" includes="opencms.tld" />
 		</jar>
 
+    	<!-- create Source-Archive to include it into the Eclipse-Configuration. -->
+    	<delete file="${opencms.output.jars}/opencms_${version.number}_sources.jar" failonerror="no"/>
+        <jar destfile="${opencms.output.jars}/opencms_${version.number}_sources.jar">
+        	<zipfileset dir="${opencms.input}/src" excludes="${excludes}" />
+            <zipfileset dir="${opencms.input}" includes="license.txt" prefix="META-INF"/>
+        </jar>
+
 	</target>
 
 	<!-- 
@@ -393,6 +400,15 @@
 			<zipfileset dir="${opencms.output.classes}" prefix="setup" includes="license.html" />
 			<zipfileset dir="${opencms.output.classes}" prefix="setup" includes="license.html" />
 		</war>
+    	
+		<!--
+			copy War-Skeleton without Modules to opencms-webapp-${version.number}.war
+			This War-Skeleton will be deployed to the Maven Repository as groupId=org.opencms and artifactId=opencms-webapp
+		 -->
+    	<delete failonerror="no" file="${opencms.build}/${app.name}-webapp-${version.number}.war" />
+    	<copy file="${opencms.build}/${app.name}.war"
+    		tofile="${opencms.build}/${app.name}-webapp-${version.number}.war" />
+    	
 	</target>
 
 
@@ -586,6 +602,12 @@
 
 		<jar jarfile="${opencms.output.jars}/opencms-setup.jar" basedir="${opencms.output}/build/setup" includes="org/opencms/**" />
 
+    	<!-- create Source-Archive to include it into the Eclipse-Configuration. -->
+    	<delete file="${opencms.output.jars}/opencms-setup_${version.number}_sources.jar" failonerror="no"/>
+        <jar destfile="${opencms.output.jars}/opencms-setup_${version.number}_sources.jar">
+        	<zipfileset dir="${opencms.input}/src-setup" excludes="${excludes}" />
+            <zipfileset dir="${opencms.input}" includes="license.txt" prefix="META-INF"/>
+        </jar>
 	</target>
 
 

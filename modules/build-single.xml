@@ -423,7 +423,11 @@
 									  classname="com.google.gwt.dev.Compiler" 
 									  fork="yes" 
 									  failonerror="true"
-									  maxmemory="512m">
+									  maxmemory="1g">
+				  			<jvmarg value="-Xms128m" />
+				  			<jvmarg value="-Xmx1024m" />
+				  			<jvmarg value="-XX:PermSize=64m" />
+				  			<jvmarg value="-XX:MaxPermSize=512m" />
 							<!--	<arg value="-XdisableClassMetadata" />
 						  			<arg value="-XdisableCastChecking" />
 						  			<arg value="-compileReport" />  removing compiler args for faster compiling and easier debugging -> stacktrace -->
