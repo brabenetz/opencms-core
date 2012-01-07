@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Javadoc OpenCms Setup" default="javadoc">
+
+    <property name="version.number"             		value="8.0.2" />
+	<property name="opencms.input" 						value="../../"/>
+    <property name="opencms.input.libs.runtime"			location="${opencms.input}/lib/runtime" />
+    <property name="opencms.input.libs.compile"			location="${opencms.input}/lib/compile" />
+    <property name="opencms.input.libs.db.base"			location="${opencms.input}/webapp/setup/database" />
+    <property name="opencms.output" 					value="${opencms.input}../BuildCms/"/>
+    <property name="opencms.output.classes"             location="${opencms.output}/build/classes-core" />
+    <property name="srcdir" 							value="${opencms.input}/src-setup"/>
+    <property name="imgdir" 							value="${opencms.input}/doc/javadoc/logos"  />
+    <property name="partname"   						value="setup" />
+ 
+    <!-- dont change this property! -->
+    <property name="destdir" 							value="${opencms.output}/doc/${partname}"  />
+  
+    <taskdef resource="net/sf/antcontrib/antlib.xml">
+	      <classpath>
+	          <pathelement location="${opencms.input.libs.compile}/ant-contrib-1.0b1.jar"/>
+        </classpath>
+    </taskdef>
+
+    <target name="init">
+        <tstamp />
+        <mkdir dir="${destdir}" />
+    </target>
+
+    <target name="javadoc" depends="init,clean">
+        <antcall target="copy.images" />
+        <javadoc destdir="${destdir}" 
+          maxmemory="512m"
+          nohelp="true"
+          classpath="${opencms.input}/bin"
+          access="protected" 
+          use="false" 
+          notree="false" 
+          nonavbar="false" 
+          noindex="false" 
+          author="true" 
+          version="true" 
+          source="1.5"
+          useexternalfile="true"
+          linksource="false"
+          nodeprecatedlist="false" 
+          nodeprecated="false" 
+          stylesheetfile="${opencms.input}/doc/javadoc/javadoc.css" 
+          doctitle="OpenCms Setup API, version ${version.number}" 
+          Windowtitle="OpenCms Setup API, version ${version.number}"
+          additionalparam=" -header &quot;&lt;script&#32;type='text/javascript'&gt;&#32;if(window.location.href.indexOf('overview-frame')&#32;==&#32;-1){&#32;document.write('&lt;a&#32;id=brandingLink&#32;target=_blank&#32;href=http://www.alkacon.com&#32;&gt;&#32;&lt;img&#32;border=0&#32;id=brandingPic&#32;src={@docRoot}/logo_alkacon_100_t.gif&#32;/&gt;&lt;/a&gt;');&#32;}&#32;else{&#32;document.write('&lt;a&#32;id=brandingLink&#32;target=_blank&#32;href=http://www.opencms.org&#32;&gt;&#32;&lt;img&#32;border=0&#32;id=brandingPic&#32;src={@docRoot}logo_opencms_100.gif&#32;/&gt;&lt;/a&gt;');}&#32;&lt;/script&gt;&quot;"
+        >
+            <package name="org.opencms.*"/>
+        	
+       	    <classpath>
+       	      <fileset dir="${opencms.input.libs.compile}">
+       	        <include name="**/*.jar"/>
+       	      </fileset>
+     	      <fileset dir="${opencms.input.libs.runtime}">
+     	        <include name="**/*.jar"/>
+     	      </fileset>
+     	      <fileset dir="${opencms.input.libs.db.base}">
+     	        <include name="**/*.jar"/>
+     	      </fileset>
+			  <pathelement location="${opencms.output.classes}" />
+       	    </classpath>
+
+            <fileset dir="${srcdir}" >
+              <include name="**/*.java" />
+           <!--   <exclude name="**/Messages.java" /> -->
+            </fileset>
+        </javadoc>
+    </target>
+    
+      
+    <target name="copy.images" >
+        <copy todir="${destdir}">
+            <fileset dir="${imgdir}" />
+        </copy>
+    </target>
+  
+    <target name="clean" depends="init" >
+        <delete includeemptydirs="true">
+            <fileset dir="${destdir}" includes="**/*"/>
+        </delete>
+    </target>
+  
+    
+    <target name="zip" depends="javadoc">
+        <zip destfile="${destdir}/../${partname}.zip">
+           <fileset dir="${destdir}/.." includes="${partname}/**" />
+        </zip>
+    </target>
+</project>

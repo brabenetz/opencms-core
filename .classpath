@@ -86,5 +86,9 @@
 	<classpathentry kind="lib" path="lib/runtime/lucene-highlighter-3.4.0.jar"/>
 	<classpathentry kind="lib" path="lib/runtime/lucene-memory-3.4.0.jar"/>
 	<classpathentry kind="lib" path="lib/runtime/lucene-queries-3.4.0.jar"/>
+	<classpathentry kind="lib" path="lib/compile/gwt-dev-2.4.0.jar"/>
+	<classpathentry kind="lib" path="lib/compile/gwt-servlet-deps-2.4.0.jar"/>
+	<classpathentry kind="lib" path="lib/compile/gwt-user-2.4.0.jar"/>
+	<classpathentry kind="lib" path="lib/runtime/gwt-servlet.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

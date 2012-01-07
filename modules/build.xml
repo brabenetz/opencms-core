@@ -313,5 +313,93 @@
 		<delete dir="${opencms.output}/build/zips-modules" />		
 		
 	</target>
+	
+	<target name="maven-create-or-replace-module-poms" depends="init" description="create or replace poms for each module">
+		<for list="${modules.var}" param="module" trim="yes">
+    	  <sequential>
+    	  	<ant antfile="${basedir}/build-single.xml" target="maven-create-or-replace-module-pom" inheritAll="false" >
+    	  		<property name="module.name" value="@{module}" />
+    	  	</ant>
+    	  </sequential>
+    	</for>
+	</target>
+	
+	<target name="maven-remove-module-poms" depends="init" description="remove poms for each module">
+		<for list="${modules.var}" param="module" trim="yes">
+    	  <sequential>
+    	  	<ant antfile="${basedir}/build-single.xml" target="maven-remove-module-pom" inheritAll="false" >
+    	  		<property name="module.name" value="@{module}" />
+    	  	</ant>
+    	  </sequential>
+    	</for>
+	</target>
 
+    <target name="maven-install" depends="init" description="install new OpenCms-Module-Artifacts into the locale Maven Repository">
+		<for list="${modules.var}" param="module" trim="yes">
+    	  <sequential>
+    	  	<ant antfile="${basedir}/build-single.xml" target="maven-install-version" inheritAll="false" >
+    	  		<property name="version.number" value="${version.number}" />
+    	  		<property name="module.name" value="@{module}" />
+    	  	</ant>
+    	  </sequential>
+    	</for>
+    </target>
+
+    <target name="maven-install-all" depends="init" description="install the OpenCms-Module-Artifacts into the locale Maven Repository">
+		<for list="${modules.var}" param="module" trim="yes">
+    	  <sequential>
+    	  	<ant antfile="${basedir}/build-single.xml" target="maven-install" inheritAll="false" >
+    	  		<property name="module.name" value="@{module}" />
+    	  	</ant>
+    	  </sequential>
+    	</for>
+    </target>
+
+    <target name="maven-deploy" depends="init" description="deploy new OpenCms-Module-Artifacts into the global Maven Repository">
+		<for list="${modules.var}" param="module" trim="yes">
+    	  <sequential>
+    	  	<ant antfile="${basedir}/build-single.xml" target="maven-deploy-version" inheritAll="false" >
+    	  		<property name="version.number" value="${version.number}" />
+    	  		<property name="module.name" value="@{module}" />
+    	  	</ant>
+    	  </sequential>
+    	</for>
+    </target>
+
+    <target name="maven-deploy-all" depends="init" description="deploy the OpenCms-Module-Artifacts into the global Maven Repository">
+		<for list="${modules.var}" param="module" trim="yes">
+    	  <sequential>
+    	  	<ant antfile="${basedir}/build-single.xml" target="maven-deploy" inheritAll="false" >
+    	  		<property name="module.name" value="@{module}" />
+    	  	</ant>
+    	  </sequential>
+    	</for>
+    </target>
+	
+	<target name="maven-print-selected-dependecies-xml" depends="init"
+		description="print the selected Modules as Maven-dependencies to the console.
+		You can copy and past it to your Customer-Specific pom.xml">
+
+		<var name="deps" value="" />
+		
+		<for list="${modules.var}" param="module" trim="yes">
+    	  <sequential>
+			<property name="@{module}.input" value="${basedir}/@{module}" />
+			<if>
+    			<available file="${@{module}.input}/resources/manifest.xml" />
+    			<then>
+    				<readxmlproperty property="@{module}.module.version" xmlfile="${@{module}.input}/resources/manifest.xml" element="export/module/version" />
+
+					<var name="deps" value="${deps}${line.separator}  &lt;dependency&gt;" />
+					<var name="deps" value="${deps}${line.separator}    &lt;groupId&gt;org.opencms.modules&lt;/groupId&gt;" />
+					<var name="deps" value="${deps}${line.separator}    &lt;artifactId&gt;@{module}&lt;/artifactId&gt;" />
+					<var name="deps" value="${deps}${line.separator}    &lt;version&gt;${@{module}.module.version}&lt;/version&gt;" />
+					<var name="deps" value="${deps}${line.separator}  &lt;/dependency&gt;" />
+    			</then>
+    		</if>
+    	  </sequential>
+    	</for>
+		
+		<echo message="Maven dependencies: ${deps}" />
+	</target>
 </project>
