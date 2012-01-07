@@ -11,7 +11,7 @@
 	<property name="imgdir" 							value="${opencms.input}/doc/javadoc/logos"  />
 	<!-- must be set:
 	<property name="partname" 							value="modules-template3" />
-	<property name="module.doc.title" 					value="OpenCms XXX Module API, version 8.0.1" />
+	<property name="module.doc.title" 					value="OpenCms XXX Module API, version 8.0.X" />
 	<property name="module.doc.packageinclude" 			value="com/alkacon/opencms/v8/**" />
 	-->
 
