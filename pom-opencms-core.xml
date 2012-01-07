@@ -1,0 +1,505 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.opencms</groupId>
+	<artifactId>opencms-core</artifactId>
+	<packaging>jar</packaging>
+	<version>8.0.1</version>
+	<name>opencms-core</name>
+	<url>http://opencms.org</url>
+
+	<description>
+		Opencms-core is the JAR-Library for OpenCms.
+	
+		OpenCms is a Content Management System that is based on Open
+		Source Software. Complex Intranet and Internet websites can be
+		quickly and cost-effectively created, maintained and managed.
+	</description>
+
+	<inceptionYear>2008</inceptionYear>
+
+	<mailingLists>
+		<mailingList>
+			<name>The OpenCms mailing list</name>
+			<subscribe>
+				http://www.opencms.org/en/development/mailinglist.html
+			</subscribe>
+			<unsubscribe>
+				http://www.opencms.org/en/development/mailinglist.html
+			</unsubscribe>
+			<post />
+			<archive>
+				http://www.opencms.org/en/development/mailinglist-archive.html
+			</archive>
+		</mailingList>
+	</mailingLists>
+
+	<developers>
+		<developer>
+			<name>Alexander Kandzior</name>
+			<id>a.kandzior</id>
+			<email>a.kandzior(at)alkacon.com</email>
+			<organization>Alkacon Software GmbH</organization>
+			<organizationUrl>http://www.alkacon.com</organizationUrl>
+			<roles>
+				<role>Geschäftsführer</role>
+				<role>Core Developer</role>
+			</roles>
+			<timezone>+1</timezone>
+		</developer>
+	</developers>
+
+	<licenses>
+		<license>
+			<name>GNU LESSER GENERAL PUBLIC LICENSE 2.1</name>
+			<url>http://www.gnu.org/licenses/lgpl-2.1.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<scm>
+		<url>git@github.com:alkacon/opencms-core.git</url>
+		<connection>scm:git:git@github.com:alkacon/opencms-core.git</connection>
+		<developerConnection>scm:git:git@github.com:alkacon/opencms-core.git</developerConnection>
+	</scm>
+	
+	<build>
+		<defaultGoal>install</defaultGoal>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.2</version>
+				<executions>
+					<!-- Build test-jars, so it can be reused in other Projects like OpenCms-Modules -->
+					<execution>
+						<goals>
+							<goal>test-jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.0.2</version>
+				<configuration>
+					<source>1.5</source>
+					<target>1.5</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+
+	<dependencies>
+		<!-- ########################### -->
+		<!-- Place here the Library-dependencies for OpenCms -->
+		<!-- Possible Scopes: compile, provided, runtime, test -->
+		<!-- see http://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html#Dependency_Scope -->
+		<!-- ########################### -->
+
+		<!-- ########################### -->
+		<!--      SCOPE Provided         -->
+		<!-- ########################### -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jsp-api</artifactId>
+			<version>2.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.4</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- ########################### -->
+		<!--      SCOPE Compile          -->
+		<!-- ########################### -->
+		<dependency>
+			<groupId>javax.activation</groupId>
+			<artifactId>activation</artifactId>
+			<version>1.1.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.alkacon</groupId>
+			<artifactId>alkacon-diff</artifactId>
+			<version>0.9.2</version>
+		</dependency>
+		<dependency>
+			<groupId>com.alkacon</groupId>
+			<artifactId>alkacon-simapi</artifactId>
+			<version>0.9.8</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils</artifactId>
+			<version>1.8.0</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>1.3</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-collections</groupId>
+			<artifactId>commons-collections</artifactId>
+			<version>3.2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-dbcp</groupId>
+			<artifactId>commons-dbcp</artifactId>
+			<version>1.3</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-digester</groupId>
+			<artifactId>commons-digester</artifactId>
+			<version>1.8</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-email</artifactId>
+			<version>1.2</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
+			<version>1.2.2</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+			<version>3.1</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>1.4</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.4</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.1.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-pool</groupId>
+			<artifactId>commons-pool</artifactId>
+			<version>1.5.5</version>
+		</dependency>
+		<dependency>
+			<groupId>dom4j</groupId>
+			<artifactId>dom4j</artifactId>
+			<version>1.6.1</version>
+			<exclusions>
+				<exclusion>
+					<groupId>xml-apis</groupId>
+					<artifactId>xml-apis</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.ehcache</groupId>
+			<artifactId>ehcache-core</artifactId>
+			<version>2.3.2</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.ehcache</groupId>
+			<artifactId>ehcache-openjpa</artifactId>
+			<version>0.2.0</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.apache.geronimo.specs</groupId>
+		    <artifactId>geronimo-jms_1.1_spec</artifactId>
+		    <version>1.1.1</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.apache.geronimo.specs</groupId>
+		    <artifactId>geronimo-jpa_2.0_spec</artifactId>
+		    <version>1.1</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.apache.geronimo.specs</groupId>
+		    <artifactId>geronimo-jta_1.1_spec</artifactId>
+		    <version>1.1.1</version>
+		</dependency>
+		<dependency>
+			<!-- OpenCms use normaly r08 -->
+		    <groupId>com.google.guava</groupId>
+		    <artifactId>guava</artifactId>
+		    <version>10.0.1</version>
+		</dependency>
+		<dependency>
+			<!-- this lib only available since version 10 (OpenCms use normaly r08) -->
+		    <groupId>com.google.guava</groupId>
+		    <artifactId>guava-gwt</artifactId>
+		    <version>10.0.1</version>
+		</dependency>
+		<dependency>
+		    <groupId>com.google.gwt</groupId>
+			<artifactId>gwt-servlet</artifactId>
+    		<version>2.3.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.htmlparser</groupId>
+			<artifactId>htmlparser</artifactId>
+			<version>1.6</version>
+		</dependency>
+		<dependency>
+			<!-- in OpenCms: jakarta-oro-2.0.8.jar -->
+			<groupId>oro</groupId>
+			<artifactId>oro</artifactId>
+			<version>2.0.8</version>
+		</dependency>
+		<dependency>
+			<groupId>jaxen</groupId>
+			<artifactId>jaxen</artifactId>
+			<version>1.1.1</version>
+			<exclusions>
+				<exclusion>
+					<groupId>xom</groupId>
+					<artifactId>xom</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>jdom</groupId>
+					<artifactId>jdom</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>xml-apis</groupId>
+					<artifactId>xml-apis</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+		    <groupId>com.google.code.findbugs</groupId>
+		    <artifactId>jsr305</artifactId>
+		    <version>1.3.9</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+			<version>1.1.2</version>
+		</dependency>
+		<dependency>
+			<!-- This is not 100% the same as the OpenCms Library "jtidy-8-svn-2006-05-21b.jar" -->
+			<!-- But the OpenCms jtidy-Library contains java-sources and svn-folders => it seems not a correct release... -->
+			<groupId>org.hibernate</groupId>
+			<artifactId>jtidy</artifactId>
+			<version>r8-20060801</version>
+		</dependency>
+		<dependency>
+			<groupId>org.safehaus.jug</groupId>
+			<artifactId>jug</artifactId>
+			<version>2.0.0</version>
+			<classifier>lgpl</classifier>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.15</version>
+			<exclusions>
+				<!-- Exclude optional libs. see http://maven.apache.org/guides/introduction/introduction-to-optional-and-excludes-dependencies.html -->
+				<exclusion>
+					<groupId>javax.mail</groupId>
+					<artifactId>mail</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>javax.jms</groupId>
+					<artifactId>jms</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.sun.jdmk</groupId>
+					<artifactId>jmxtools</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.sun.jmx</groupId>
+					<artifactId>jmxri</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-analyzers</artifactId>
+			<version>3.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-core</artifactId>
+			<version>3.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-highlighter</artifactId>
+			<version>3.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-memory</artifactId>
+			<version>3.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-queries</artifactId>
+			<version>3.1.0</version>
+			<exclusions>
+				<exclusion>
+					<groupId>jakarta-regexp</groupId>
+					<artifactId>jakarta-regexp</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>mail</artifactId>
+			<version>1.4.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.openjpa</groupId>
+			<artifactId>openjpa</artifactId>
+			<version>2.1.0</version>
+		</dependency>
+		<dependency>
+			<!-- includes dependecy to fontbox and jempbox -->
+			<groupId>org.apache.pdfbox</groupId>
+			<artifactId>pdfbox</artifactId>
+			<version>1.5.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.bouncycastle</groupId>
+			<artifactId>bcprov-jdk15</artifactId>
+			<version>1.46</version>
+		</dependency>
+		<dependency>
+			<!-- Apache POI - the Java API for Microsoft Documents -->
+			<!-- includes dependecy to poi and poi-ooxml-schemas -->
+		    <groupId>org.apache.poi</groupId>
+		    <artifactId>poi-ooxml</artifactId>
+		    <version>3.7</version>
+			<exclusions>
+				<!-- Not used in OpenCms: -->
+				<exclusion>
+					<groupId>org.apache.geronimo.specs</groupId>
+					<artifactId>geronimo-stax-api_1.0_spec</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>stax</groupId>
+					<artifactId>stax-api</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+		    <groupId>org.apache.poi</groupId>
+		    <artifactId>poi-scratchpad</artifactId>
+		    <version>3.7</version>
+		</dependency>
+		<dependency>
+			<!-- Apache Tika - a content analysis toolkit -->
+		    <groupId>org.apache.tika</groupId>
+		    <artifactId>tika-parsers</artifactId>
+		    <version>0.9</version>
+			<exclusions>
+				<!-- Not used in OpenCms: -->
+				<exclusion>
+					<groupId>edu.ucar</groupId>
+					<artifactId>netcdf</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.james</groupId>
+					<artifactId>apache-mime4j</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.commons</groupId>
+					<artifactId>commons-compress</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.bouncycastle</groupId>
+					<artifactId>bcmail-jdk15</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.geronimo.specs</groupId>
+					<artifactId>geronimo-stax-api_1.0_spec</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.ccil.cowan.tagsoup</groupId>
+					<artifactId>tagsoup</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>asm</groupId>
+					<artifactId>asm</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>de.l3s.boilerpipe</groupId>
+					<artifactId>boilerpipe</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>rome</groupId>
+					<artifactId>rome</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.drewnoakes</groupId>
+					<artifactId>metadata-extractor</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>quartz</groupId>
+			<artifactId>quartz</artifactId>
+			<version>1.5.2</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sourceforge.serp</groupId>
+			<artifactId>serp</artifactId>
+			<version>1.13.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.5.11</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-jdk14</artifactId>
+			<version>1.5.11</version>
+		</dependency>
+		<dependency>
+			<groupId>taglibs</groupId>
+			<artifactId>standard</artifactId>
+			<version>1.1.2</version>
+		</dependency>
+		<dependency>
+			<groupId>xml-apis</groupId>
+			<artifactId>xml-apis</artifactId>
+			<version>1.3.04</version>
+		</dependency>
+		<dependency>
+			<groupId>xerces</groupId>
+			<artifactId>xercesImpl</artifactId>
+			<version>2.9.1</version>
+			<exclusions>
+				<exclusion>
+					<groupId>xml-apis</groupId>
+					<artifactId>xml-apis</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<!-- ########################### -->
+		<!--      SCOPE Test             -->
+		<!-- ########################### -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+
+	</dependencies>
+
+</project>

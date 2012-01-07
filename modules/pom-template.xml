@@ -1,0 +1,107 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.opencms.modules</groupId>
+	<artifactId>@OPENCMS_MODULE_NAME@</artifactId>
+	<packaging>jar</packaging>
+	<version>@OPENCMS_MODULE_VERSION@</version>
+	<name>@OPENCMS_MODULE_NAME@</name>
+	<url>http://opencms.org</url>
+
+	<description><![CDATA[
+		OpenCms-Module '@OPENCMS_MODULE_NAME@'.
+		
+		@OPENCMS_MODULE_DESCRIPTION@
+		
+		OpenCms is a Content Management System that is based on Open
+		Source Software. Complex Intranet and Internet websites can be
+		quickly and cost-effectively created, maintained and managed.
+		
+		
+	]]></description>
+	
+	<inceptionYear>2008</inceptionYear>
+
+	<mailingLists>
+		<mailingList>
+			<name>The OpenCms mailing list</name>
+			<subscribe>
+				http://www.opencms.org/en/development/mailinglist.html
+			</subscribe>
+			<unsubscribe>
+				http://www.opencms.org/en/development/mailinglist.html
+			</unsubscribe>
+			<post />
+			<archive>
+				http://www.opencms.org/en/development/mailinglist-archive.html
+			</archive>
+		</mailingList>
+	</mailingLists>
+
+	<developers>
+		<developer>
+			<name>Alexander Kandzior</name>
+			<id>a.kandzior</id>
+			<email>a.kandzior(at)alkacon.com</email>
+			<organization>Alkacon Software GmbH</organization>
+			<organizationUrl>http://www.alkacon.com</organizationUrl>
+			<roles>
+				<role>Geschäftsführer</role>
+				<role>Core Developer</role>
+			</roles>
+			<timezone>+1</timezone>
+		</developer>
+	</developers>
+
+	<licenses>
+		<license>
+			<name>GNU LESSER GENERAL PUBLIC LICENSE 2.1</name>
+			<url>http://www.gnu.org/licenses/lgpl-2.1.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<scm>
+		<url>git@github.com:alkacon/opencms-core.git</url>
+		<connection>scm:git:git@github.com:alkacon/opencms-core.git</connection>
+		<developerConnection>scm:git:git@github.com:alkacon/opencms-core.git</developerConnection>
+	</scm>
+	
+	<build>
+		<defaultGoal>install</defaultGoal>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.0.2</version>
+				<configuration>
+					<source>1.5</source>
+					<target>1.5</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<dependencies>
+		<!-- ########################### -->
+		<!-- Place here the Library-dependencies for OpenCms -->
+		<!-- Possible Scopes: compile, provided, runtime, test -->
+		<!-- see http://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html#Dependency_Scope -->
+		<!-- ########################### -->
+
+		<!-- ########################### -->
+		<!--      SCOPE Provided          -->
+		<!-- ########################### -->
+		
+		<!-- All Modules depends on opencms-core -->
+		<!-- Already provided in OpenCms-Webapp -->
+		<dependency>
+			<groupId>org.opencms</groupId>
+			<artifactId>opencms-core</artifactId>
+			<version>8.0.1</version>
+			<scope>provided</scope>
+		</dependency>
+		
+		<!-- OpenCms-Module-Dependencies of Module '@OPENCMS_MODULE_NAME@' -->
+		@OPENCMS_MODULE_DEPENDENCIES@
+	</dependencies>
+
+</project>

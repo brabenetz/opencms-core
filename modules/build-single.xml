@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project name="OpenCms Common Module" default="dist" basedir=".">
+<project name="OpenCms Common Module" default="dist" basedir="." xmlns:artifact="urn:maven-artifact-ant">
 
 	<property name="opencms.input" location="${basedir}/.." />
 	<property name="opencms.output" location="${opencms.input}/../BuildCms" />
@@ -10,6 +10,14 @@
 	<property name="opencms.build" location="${opencms.output}/build" />
 	<property name="opencms.output.jars" location="${opencms.build}/jars-core" />
 	<property name="java.target.version" value="1.5" />
+
+
+    <!-- defined maven snapshots and staging repository id and url -->
+	<property name="maven-snapshots-repository-id" value="sonatype-nexus-snapshots" />
+	<property name="maven-snapshots-repository-url" value="https://oss.sonatype.org/content/repositories/snapshots/" />
+	<property name="maven-staging-repository-id" value="sonatype-nexus-staging" />
+	<property name="maven-staging-repository-url" value="https://oss.sonatype.org/service/local/staging/deploy/maven2/" />
+
 
 	<property environment="env" />
 	<property file="${basedir}/opencms.properties" />
@@ -33,6 +41,13 @@
 		</classpath>
 	</taskdef>
 
+	<!-- ==================== Maven typedef ================================== -->
+    <typedef resource="org/apache/maven/artifact/ant/antlib.xml" uri="urn:maven-artifact-ant">
+        <classpath>
+            <pathelement location="${opencms.input.libs.compile}/maven-ant-tasks-2.0.10.jar" />
+        </classpath>
+    </typedef>
+
 	<property name="module.input" location="${basedir}/${module.name}" />
 	<property name="module.input.res" location="${module.input}/resources" />
 	<property name="module.input.lib" location="${module.input.res}/system/modules/${module.name}/lib" />
@@ -54,11 +69,12 @@
 		<if>
 			<isset property="module.gwt.output" />
 			<then>
-				<!-- This only deletes the "loader" Javascript, but this is enough to force a rebuild if the compile-gwt target is executed. -->
+			    <!-- This only deletes the "loader" Javascript, but this is enough to force a rebuild if the compile-gwt target is executed. -->
 				<delete>
 					<fileset dir="${module.gwt.output}" includes="*.nocache.js" />
 				</delete>
 			</then>
+			
 		</if>
 		<delete dir="${module.output.classes}" />
 		<delete dir="${module.output.jar}" />
@@ -68,6 +84,7 @@
 				<delete>
 					<fileset dir="${module.output.zip}">
 						<include name="${module.name}_*.zip" />
+						
 					</fileset>
 				</delete>
 			</then>
@@ -395,7 +412,7 @@
 			</then>
 		</if>
 	</target>
-
+	
 	<target name="compile" depends="compile-classes, compile-gwt" description="Compiles ${module.name} module classes and GWT classes" />
 
 	<target name="compile-classes" depends="init, builddeps, get-dependency-paths" description="Compiles ${module.name} module classes">
@@ -436,11 +453,38 @@
 						<copy todir="${module.output.classes}/${module.package}">
 							<fileset dir="${module.input.src}" includes="${jar.includes.shared}" excludes="${jar.excludes}" />
 						</copy>
+
+				    	<!-- create Source-Archive to include it into the Eclipse-Configuration. -->
+				    	<delete file="${module.output.jar}/${module.name}_${module.version}_sources.jar" failonerror="no"/>
+						<mkdir dir="${module.output.jar}" />
+				        <jar destfile="${module.output.jar}/${module.name}_${module.version}_sources.jar">
+				        	<zipfileset dir="${module.input.src.shared}" includes="${module.package}/*.*" />
+				        </jar>
+						
+				    	<!-- create Javadoc-Archive for Maven central Repo Distribusion. -->
+				    	<ant antfile="${opencms.input}/doc/javadoc/javadoc-modules.xml" target="javadoc" inheritAll="false">
+				    		<property name="srcdir" 							value="${module.input.src.shared}" />
+				    		<property name="partname" 							value="${module.name}" />
+				    		<property name="module.doc.title" 					value="OpenCms ${module.name} Module API, version ${version.number}" />
+				    		<property name="module.doc.packageinclude" 			value="${module.package}**" />
+					  	</ant>
+
+				    	<delete file="${module.output.jar}/${module.name}_${module.version}_javadoc.jar" failonerror="no"/>
+				        <jar destfile="${module.output.jar}/${module.name}_${module.version}_javadoc.jar">
+				        	<zipfileset dir="${opencms.output}/doc/${module.name}" />
+				        </jar>
 					</then>
 					<else>
 						<if>
 							<equals arg1="${src.mode}" arg2="multishared" />
 							<then>
+								<!-- create Source-Archive to include it into the Eclipse-Configuration. -->
+								<!-- in multishared mode create an empty Source-Archive and update it for each package. -->
+						    	<delete file="${module.output.jar}/${module.name}_${module.version}_sources.jar" failonerror="no"/>
+								<copy file="${opencms.input.warfiles}/update/empty.jar" tofile="${module.output.jar}/${module.name}_${module.version}_sources.jar" />
+
+								<var name="module.doc.packageinclude" value="" />
+								
 								<for list="${module.packages}" param="mpackage" trim="true">
 									<sequential>
 										<var name="package.dir" value="" />
@@ -450,6 +494,7 @@
 												<var name="package.dir" value="${package.dir}@{package}/" />
 											</sequential>
 										</for>
+										<var name="module.doc.packageinclude" value="${module.doc.packageinclude}${package.dir}** " />
 										<javac 
 											srcdir="${module.input.src.shared}" 
 											destdir="${module.output.classes}" 
@@ -478,8 +523,30 @@
 										<copy todir="${module.output.classes}/${package.dir}">
 											<fileset dir="${module.input.src.shared}/${package.dir}" includes="${jar.includes.shared}" excludes="${jar.excludes}" />
 										</copy>
+
+										
+								    	<!-- create Source-Archive to include it into the Eclipse-Configuration. -->
+										<!-- in multishared mode update the Source-Archive with this package. -->
+										<mkdir dir="${module.output.jar}" />
+								        <jar destfile="${module.output.jar}/${module.name}_${module.version}_sources.jar" update="true" >
+								        	<zipfileset dir="${module.input.src.shared}" includes="${package.dir}/*.*" />
+								        </jar>
+										
 									</sequential>
 								</for>
+								
+						    	<!-- create Javadoc-Archive for Maven central Repo Distribusion. -->
+						    	<ant antfile="${opencms.input}/doc/javadoc/javadoc-modules.xml" target="javadoc" inheritAll="false">
+						    		<property name="srcdir" 							value="${module.input.src.shared}" />
+						    		<property name="partname" 							value="${module.name}" />
+						    		<property name="module.doc.title" 					value="OpenCms ${module.name} Module API, version ${version.number}" />
+						    		<property name="module.doc.packageinclude" 			value="${module.doc.packageinclude}" />
+							  	</ant>
+
+						    	<delete file="${module.output.jar}/${module.name}_${module.version}_javadoc.jar" failonerror="no"/>
+						        <jar destfile="${module.output.jar}/${module.name}_${module.version}_javadoc.jar">
+						        	<zipfileset dir="${opencms.output}/doc/${module.name}" />
+						        </jar>
 							</then>
 							<else>
 								<javac 
@@ -512,6 +579,25 @@
 										<exclude name="**/test/**" />
 									</fileset>
 								</copy>
+
+						    	<!-- create Source-Archive to include it into the Eclipse-Configuration. -->
+						    	<delete file="${module.output.jar}/${module.name}_${module.version}_sources.jar" failonerror="no"/>
+								<mkdir dir="${module.output.jar}" />
+						        <jar destfile="${module.output.jar}/${module.name}_${module.version}_sources.jar">
+						        	<zipfileset dir="${module.input.src.single}" />
+						        </jar>
+								
+						    	<!-- create Javadoc-Archive for Maven central Repo Distribusion. -->
+						    	<ant antfile="${opencms.input}/doc/javadoc/javadoc-modules.xml" target="javadoc" inheritAll="false">
+						    		<property name="srcdir" 							value="${module.input.src.single}" />
+						    		<property name="partname" 							value="${module.name}" />
+						    		<property name="module.doc.title" 					value="OpenCms ${module.name} Module API, version ${version.number}" />
+						    		<property name="module.doc.packageinclude" 			value="**/*" />
+							  	</ant>
+						    	<delete file="${module.output.jar}/${module.name}_${module.version}_javadoc.jar" failonerror="no"/>
+						        <jar destfile="${module.output.jar}/${module.name}_${module.version}_javadoc.jar">
+						        	<zipfileset dir="${opencms.output}/doc/${module.name}" />
+						        </jar>
 							</else>
 						</if>
 					</else>
@@ -652,4 +738,238 @@
 
 	<target name="jboss.update" depends="jboss.copy" description="Recompile changes and installs them in JBoss deploy directory" />
 
+	<target name="maven-read-manifest" description="read manifest to module.version, module.dependencies, module.description">
+
+		<property name="module.input" 				value="${basedir}/${module.name}" />
+		<property name="module.input.res" 			value="${module.input}/resources" />
+
+		<if>
+			<available file="${module.input.res}/manifest.xml" />
+			<then>
+				<readxmlproperty property="module.version" xmlfile="${module.input.res}/manifest.xml" element="export/module/version" />
+				<readxmlproperty property="module.dependencies" xmlfile="${module.input.res}/manifest.xml" element="export/module/dependencies/dependency" attribute="name" />
+				<readxmlproperty property="module.description" xmlfile="${module.input.res}/manifest.xml" element="export/module/description" />
+			</then>
+			<else>
+	    	  	<echo message="WARNING: Not found: ${module.input.res}/manifest.xml"/>
+			</else>
+		</if>
+		
+	</target>
+	
+	<target name="maven-create-or-replace-module-pom" depends="maven-read-manifest" description="create or replace poms for each module">
+
+		<var name="deps" value="" />
+		
+		<for list="${module.dependencies}" param="dependency" trim="true">
+			<sequential>
+				<property name="@{dependency}.input" value="${basedir}/@{dependency}" />
+				<if>
+	    			<available file="${@{dependency}.input}/resources/manifest.xml" />
+	    			<then>
+	    				<readxmlproperty property="@{dependency}.module.version" xmlfile="${@{dependency}.input}/resources/manifest.xml" element="export/module/version" />
+
+						<var name="deps" value="${deps}${line.separator}      &lt;dependency&gt;" />
+						<var name="deps" value="${deps}${line.separator}        &lt;groupId&gt;org.opencms.modules&lt;/groupId&gt;" />
+						<var name="deps" value="${deps}${line.separator}        &lt;artifactId&gt;@{dependency}&lt;/artifactId&gt;" />
+	    				<var name="deps" value="${deps}${line.separator}        &lt;version&gt;${@{dependency}.module.version}&lt;/version&gt;" />
+	    				<var name="deps" value="${deps}${line.separator}        &lt;scope&gt;provided&lt;/scope&gt;" />
+	    				<var name="deps" value="${deps}${line.separator}      &lt;/dependency&gt;" />
+	    				
+	    			</then>
+	    		</if>
+				
+			</sequential>
+		</for>
+
+		<!-- Special Cases: two modules have additional Dependencies -->
+		<if>
+			<equals arg1="${module.name}" arg2="org.opencms.frontend.layoutpage" />
+			<then>
+				<echo message="Add freemarker Dependency to the module ${module.name}" />
+				<var name="deps" value="${deps}${line.separator}      &lt;dependency&gt;" />
+				<var name="deps" value="${deps}${line.separator}        &lt;groupId&gt;freemarker&lt;/groupId&gt;" />
+				<var name="deps" value="${deps}${line.separator}        &lt;artifactId&gt;freemarker&lt;/artifactId&gt;" />
+				<var name="deps" value="${deps}${line.separator}        &lt;version&gt;2.3.6&lt;/version&gt;" />
+				<var name="deps" value="${deps}${line.separator}      &lt;/dependency&gt;" />
+			</then>
+		</if>
+		<if>
+			<equals arg1="${module.name}" arg2="org.opencms.frontend.templateone.form" />
+			<then>
+				<echo message="Add jcaptcha-all Dependency to the module ${module.name}" />
+				<var name="deps" value="${deps}${line.separator}      &lt;dependency&gt;" />
+				<var name="deps" value="${deps}${line.separator}        &lt;!-- In OpenCms this Library is named 'jcaptcha-1.0-all.jar' but it is Version 1.0-RC6 --&gt;" />
+				<var name="deps" value="${deps}${line.separator}        &lt;groupId&gt;com.octo.captcha&lt;/groupId&gt;" />
+				<var name="deps" value="${deps}${line.separator}        &lt;artifactId&gt;jcaptcha-all&lt;/artifactId&gt;" />
+				<var name="deps" value="${deps}${line.separator}        &lt;version&gt;1.0-RC6&lt;/version&gt;" />
+				<var name="deps" value="${deps}${line.separator}        &lt;exclusions&gt;" />
+				<var name="deps" value="${deps}${line.separator}          &lt;exclusion&gt;" />
+				<var name="deps" value="${deps}${line.separator}            &lt;!-- ehcache-core is already included in opencms --&gt;" />
+				<var name="deps" value="${deps}${line.separator}            &lt;groupId&gt;net.sf.ehcache&lt;/groupId&gt;" />
+				<var name="deps" value="${deps}${line.separator}            &lt;artifactId&gt;ehcache&lt;/artifactId&gt;" />
+				<var name="deps" value="${deps}${line.separator}          &lt;/exclusion&gt;" />
+				<var name="deps" value="${deps}${line.separator}          &lt;exclusion&gt;" />
+				<var name="deps" value="${deps}${line.separator}            &lt;groupId&gt;concurrent&lt;/groupId&gt;" />
+				<var name="deps" value="${deps}${line.separator}            &lt;artifactId&gt;concurrent&lt;/artifactId&gt;" />
+				<var name="deps" value="${deps}${line.separator}          &lt;/exclusion&gt;" />
+				<var name="deps" value="${deps}${line.separator}          &lt;exclusion&gt;" />
+				<var name="deps" value="${deps}${line.separator}            &lt;groupId&gt;org.springframework&lt;/groupId&gt;" />
+				<var name="deps" value="${deps}${line.separator}            &lt;artifactId&gt;spring&lt;/artifactId&gt;" />
+				<var name="deps" value="${deps}${line.separator}          &lt;/exclusion&gt;" />
+				<var name="deps" value="${deps}${line.separator}        &lt;/exclusions&gt;" />
+				<var name="deps" value="${deps}${line.separator}      &lt;/dependency&gt;" />
+			</then>
+		</if>
+		
+		<echo message="copy file='${basedir}/pom-template.xml' tofile='${module.input}/pom.xml'"/>
+		<echo message="${module.name} - ${module.version}"/>
+		<copy file="${basedir}/pom-template.xml" tofile="${module.input}/pom.xml" overwrite="true">   
+	    	<filterset>
+	    		<filter token="OPENCMS_MODULE_NAME" value="${module.name}" />
+	    		<filter token="OPENCMS_MODULE_VERSION" value="${module.version}" />
+	    		<filter token="OPENCMS_MODULE_DESCRIPTION" value="${module.description}" />
+	    		<filter token="OPENCMS_MODULE_DEPENDENCIES" value="${deps}" />
+        	</filterset>
+        </copy>
+		
+	</target>
+	
+    <target name="maven-install" depends="maven-read-manifest, maven-create-or-replace-module-pom" description="install the OpenCms-Artifacts into the locale Maven Repository">
+		
+    	<if>
+			<and>
+				<available file="${module.output.jar}/${module.name}.jar" />
+				<available file="${module.output.jar}/${module.name}_${module.version}_sources.jar" />
+			</and>
+			<then>
+				<!-- Jar and Java-Sources are available -->
+				<echo message="install module '${module.name}-${module.version}' (Module-zip, Classes-Jar, Sources-Jar)" />
+				<artifact:pom id="pom-module" file="${module.input}/pom.xml" />
+				<artifact:install file="${module.output.jar}/${module.name}.jar">
+					<pom refid="pom-module"/>
+					<attach file="${module.output.jar}/${module.name}_${module.version}_sources.jar" type="jar" classifier="sources" />
+					<attach file="${module.output.zip}/${module.name}_${module.version}.zip" type="zip" classifier="opencms-module" />
+				</artifact:install>
+			</then>
+			<else>
+				<!-- Install OpenCms-Module ZIP Without JAR and Java-Sources -->
+				<echo message="install module '${module.name}-${module.version}' (Module-zip)" />
+				<artifact:pom id="pom-module" file="${module.input}/pom.xml" />
+				<artifact:install file="${opencms.input.warfiles}/update/empty.jar">
+					<pom refid="pom-module"/>
+					<attach file="${module.output.zip}/${module.name}_${module.version}.zip" type="zip" classifier="opencms-module" />
+				</artifact:install>
+			</else>
+		</if>
+		
+		<delete file="${module.input}/pom.xml" failonerror="false" />
+    </target>
+
+    <target name="maven-install-version" depends="maven-read-manifest" description="install only if Parameter 'version.number' is the current module.version">
+		<if>
+			<equals arg1="${module.version}" arg2="${version.number}" />
+			<then>
+				<antcall target="maven-install" />
+			</then>
+		</if>
+    </target>
+	
+    <target name="maven-deploy" depends="maven-read-manifest, maven-create-or-replace-module-pom" description="deploy the OpenCms-Artifacts into the global Maven Repository">
+		<!-- required for Transport-protocol -->
+		<artifact:install-provider artifactId="wagon-ssh" version="2.2"/>
+
+		<if>
+			<and>
+				<available file="${module.output.jar}/${module.name}.jar" />
+			</and>
+			<then>
+				<!-- Jar and Java-Sources are available -->
+				<echo message="deploy module '${module.name}-${module.version}' (Module-zip, Classes-Jar, Sources-Jar)" />
+		    	
+
+				<!-- sign and deploy the Jar artifact -->
+				<artifact:mvn>
+					<arg value="org.apache.maven.plugins:maven-gpg-plugin:1.3:sign-and-deploy-file" />
+					<arg value="-Durl=${maven-staging-repository-url}" />
+					<arg value="-DrepositoryId=${maven-staging-repository-id}" />
+					<arg value="-DpomFile=${module.input}/pom.xml" />
+					<arg value="-Dfile=${module.output.jar}/${module.name}.jar" />
+		            <arg value="-Pgpg" />
+				</artifact:mvn>
+				<!-- sign and deploy the sources artifact -->
+				<artifact:mvn>
+					<arg value="org.apache.maven.plugins:maven-gpg-plugin:1.3:sign-and-deploy-file" />
+					<arg value="-Durl=${maven-staging-repository-url}" />
+					<arg value="-DrepositoryId=${maven-staging-repository-id}" />
+					<arg value="-DpomFile=${module.input}/pom.xml" />
+					<arg value="-Dfile=${module.output.jar}/${module.name}_${module.version}_sources.jar" />
+					<arg value="-Dclassifier=sources" />
+		            <arg value="-Pgpg" />
+				</artifact:mvn>
+				<!-- sign and deploy the javadoc artifact -->
+				<artifact:mvn>
+					<arg value="org.apache.maven.plugins:maven-gpg-plugin:1.3:sign-and-deploy-file" />
+					<arg value="-Durl=${maven-staging-repository-url}" />
+					<arg value="-DrepositoryId=${maven-staging-repository-id}" />
+					<arg value="-DpomFile=${module.input}/pom.xml" />
+					<arg value="-Dfile=${module.output.jar}/${module.name}_${module.version}_javadoc.jar" />
+					<arg value="-Dclassifier=javadoc" />
+		            <arg value="-Pgpg" />
+				</artifact:mvn>
+				<!-- sign and deploy the OpenCms-Module ZIP artifact -->
+				<artifact:mvn>
+					<arg value="org.apache.maven.plugins:maven-gpg-plugin:1.3:sign-and-deploy-file" />
+					<arg value="-Durl=${maven-staging-repository-url}" />
+					<arg value="-DrepositoryId=${maven-staging-repository-id}" />
+					<arg value="-DpomFile=${module.input}/pom.xml" />
+					<arg value="-Dfile=${module.output.zip}/${module.name}_${module.version}.zip" />
+					<arg value="-Dclassifier=opencms-module" />
+					<arg value="-Dtype=zip" />
+					<arg value="-Dpackaging=zip" />
+		            <arg value="-Pgpg" />
+				</artifact:mvn>
+			</then>
+			<else>
+				<!-- Install OpenCms-Module ZIP Without JAR and Java-Sources -->
+				<echo message="deploy module '${module.name}-${module.version}' (Module-zip)" />
+		    	
+
+				<!-- sign and deploy an empty Jar artifact -->
+				<artifact:mvn>
+					<arg value="org.apache.maven.plugins:maven-gpg-plugin:1.3:sign-and-deploy-file" />
+					<arg value="-Durl=${maven-staging-repository-url}" />
+					<arg value="-DrepositoryId=${maven-staging-repository-id}" />
+					<arg value="-DpomFile=${module.input}/pom.xml" />
+					<arg value="-Dfile=${opencms.input.warfiles}/update/empty.jar" />
+		            <arg value="-Pgpg" />
+				</artifact:mvn>
+				<!-- sign and deploy the OpenCms-Module ZIP artifact -->
+				<artifact:mvn>
+					<arg value="org.apache.maven.plugins:maven-gpg-plugin:1.3:sign-and-deploy-file" />
+					<arg value="-Durl=${maven-staging-repository-url}" />
+					<arg value="-DrepositoryId=${maven-staging-repository-id}" />
+					<arg value="-DpomFile=${module.input}/pom.xml" />
+					<arg value="-Dfile=${module.output.zip}/${module.name}_${module.version}.zip" />
+					<arg value="-Dclassifier=opencms-module" />
+					<arg value="-Dtype=zip" />
+					<arg value="-Dpackaging=zip" />
+		            <arg value="-Pgpg" />
+				</artifact:mvn>
+			</else>
+		</if>
+
+		<delete file="${module.input}/pom.xml" failonerror="false" />
+		<delete file="${module.input}/pom.xml.asc" failonerror="false" />
+		<delete file="${opencms.input.warfiles}/update/empty.jar.asc" failonerror="false" />
+    </target>
+
+    <target name="maven-deploy-version" depends="maven-read-manifest" description="deploy only if Parameter 'version.number' is the current module.version">
+		<if>
+			<equals arg1="${module.version}" arg2="${version.number}" />
+			<then>
+				<antcall target="maven-deploy" />
+			</then>
+		</if>
+    </target>
 </project>
