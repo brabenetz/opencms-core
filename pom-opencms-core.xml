@@ -136,7 +136,7 @@
 		<dependency>
 			<groupId>commons-beanutils</groupId>
 			<artifactId>commons-beanutils</artifactId>
-			<version>1.8.0</version>
+			<version>1.8.3</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-codec</groupId>
@@ -208,7 +208,7 @@
 		<dependency>
 			<groupId>net.sf.ehcache</groupId>
 			<artifactId>ehcache-core</artifactId>
-			<version>2.3.2</version>
+			<version>2.4.7</version>
 		</dependency>
 		<dependency>
 			<groupId>net.sf.ehcache</groupId>
@@ -229,6 +229,18 @@
 		    <groupId>org.apache.geronimo.specs</groupId>
 		    <artifactId>geronimo-jta_1.1_spec</artifactId>
 		    <version>1.1.1</version>
+		</dependency>
+		<dependency>
+			<!-- Since OpenCms 8.0.4 -->
+			<groupId>org.apache.geronimo.specs</groupId>
+			<artifactId>geronimo-validation_1.0_spec</artifactId>
+			<version>1.1</version>
+		</dependency>
+		<dependency>
+			<!-- Since OpenCms 8.0.4 -->
+			<groupId>org.apache.bval</groupId>
+			<artifactId>org.apache.bval.bundle</artifactId>
+			<version>0.3-incubating</version>
 		</dependency>
 		<dependency>
 			<!-- OpenCms use normaly r08 -->
@@ -327,27 +339,27 @@
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
 			<artifactId>lucene-analyzers</artifactId>
-			<version>3.4.0</version>
+			<version>3.5.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
 			<artifactId>lucene-core</artifactId>
-			<version>3.4.0</version>
+			<version>3.5.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
 			<artifactId>lucene-highlighter</artifactId>
-			<version>3.4.0</version>
+			<version>3.5.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
 			<artifactId>lucene-memory</artifactId>
-			<version>3.4.0</version>
+			<version>3.5.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
 			<artifactId>lucene-queries</artifactId>
-			<version>3.4.0</version>
+			<version>3.5.0</version>
 			<exclusions>
 				<exclusion>
 					<groupId>jakarta-regexp</groupId>
@@ -363,7 +375,7 @@
 		<dependency>
 			<groupId>org.apache.openjpa</groupId>
 			<artifactId>openjpa</artifactId>
-			<version>2.1.0</version>
+			<version>2.2.0</version>
 		</dependency>
 		<dependency>
 			<!-- includes dependecy to fontbox and jempbox -->
@@ -431,10 +443,6 @@
 					<artifactId>tagsoup</artifactId>
 				</exclusion>
 				<exclusion>
-					<groupId>asm</groupId>
-					<artifactId>asm</artifactId>
-				</exclusion>
-				<exclusion>
 					<groupId>de.l3s.boilerpipe</groupId>
 					<artifactId>boilerpipe</artifactId>
 				</exclusion>
@@ -461,12 +469,12 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>1.5.11</version>
+			<version>1.6.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-jdk14</artifactId>
-			<version>1.5.11</version>
+			<version>1.6.1</version>
 		</dependency>
 		<dependency>
 			<groupId>taglibs</groupId>

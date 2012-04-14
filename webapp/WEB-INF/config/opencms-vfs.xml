@@ -174,6 +174,7 @@
 			    <mimetype extension=".kmz" type="application/vnd.google-earth.kmz" />
 			    <mimetype extension=".mif" type="application/vnd.mif" />
 			    <mimetype extension=".xls" type="application/vnd.ms-excel" />
+                            <mimetype extension=".chm" type="application/vnd.ms-htmlhelp" />
                 <mimetype extension=".msg" type="application/vnd.ms-outlook"/>
 			    <mimetype extension=".pot" type="application/vnd.ms-powerpoint" />
 			    <mimetype extension=".ppt" type="application/vnd.ms-powerpoint" />
@@ -677,6 +678,7 @@
 				<widget class="org.opencms.widgets.CmsLinkGalleryWidget" alias="LinkGalleryWidget"/>
 				<widget class="org.opencms.widgets.CmsLocalizationWidget" alias="LocalizationWidget"/>
 				<widget class="org.opencms.widgets.CmsMultiSelectWidget" alias="MultiSelectWidget" />
+				<widget class="org.opencms.widgets.CmsMultiSelectGroupWidget" alias="GroupMultiSelectorWidget" />
 				<widget class="org.opencms.widgets.CmsOrgUnitWidget" alias="OrgUnitWidget" />
 				<widget class="org.opencms.widgets.CmsPrincipalWidget" alias="PrincipalWidget" />
 				<widget class="org.opencms.widgets.CmsRadioSelectWidget" alias="RadioSelectWidget" />
