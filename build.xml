@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project name="OpenCms" default="bindist" basedir=".">
+<project name="OpenCms" default="bindist" basedir="." xmlns:artifact="urn:maven-artifact-ant">
 	<property file="${basedir}/xbuild.properties" />
 	<property file="${basedir}/build-default.properties" /> 
 	<property name="version.number" value="8.5.0" />
@@ -16,6 +16,7 @@
 	<property name="opencms.build" location="${opencms.output}/build" />
 	<property name="opencms.output.classes" location="${opencms.output}/build/classes-core" />
 	<property name="opencms.output.tests" location="${opencms.output}/build/test" />
+    <property name="opencms.output.javadoc" location="${opencms.output}/doc" />
 	<property name="opencms.output.jars" location="${opencms.output}/build/jars-core" />
 	<property name="opencms.output.warfiles" location="${opencms.output}/build/${app.name}" />
 	<property name="opencms.output.distfiles" location="${opencms.output}/zip" />
@@ -55,6 +56,19 @@
 	<!-- comma separated list of files in WEB-INF/ to be updated -->
 	<property name="updater.webinf.files" value="opencms.tld,web.xml,cmsshell.sh,classes/META-INF/persistence.xml,classes/ehcache.xml,classes/repository.properties,sun-jaxws.xml" />
 
+    <!-- defined maven snapshots and staging repository id and url -->
+	<property name="maven-snapshots-repository-id" value="sonatype-nexus-snapshots" />
+	<property name="maven-snapshots-repository-url" value="https://oss.sonatype.org/content/repositories/snapshots/" />
+	<property name="maven-staging-repository-id" value="sonatype-nexus-staging" />
+	<property name="maven-staging-repository-url" value="https://oss.sonatype.org/service/local/staging/deploy/maven2/" />
+	
+	<!-- ==================== Maven typedef ================================== -->
+    <typedef resource="org/apache/maven/artifact/ant/antlib.xml" uri="urn:maven-artifact-ant">
+        <classpath>
+            <pathelement location="${opencms.input.libs.compile}/maven-ant-tasks-2.0.10.jar" />
+        </classpath>
+    </typedef>
+    
 	<taskdef resource="net/sf/antcontrib/antlib.xml" loaderref="contrib">
 		<classpath>
 			<pathelement location="${opencms.input.libs.compile}/ant-contrib-1.0b1.jar" />
@@ -276,6 +290,13 @@
 			<metainf dir="${opencms.input.warfiles}/WEB-INF" includes="opencms.tld" />
 		</jar>
 
+    	<!-- create Source-Archive to include it into the Eclipse-Configuration. -->
+    	<delete file="${opencms.output.jars}/opencms_${version.number}_sources.jar" failonerror="no"/>
+        <jar destfile="${opencms.output.jars}/opencms_${version.number}_sources.jar">
+        	<zipfileset dir="${opencms.input}/src" excludes="${excludes}" />
+            <zipfileset dir="${opencms.input}" includes="license.txt" prefix="META-INF"/>
+        </jar>
+
 	</target>
 
 	<!-- 
@@ -415,6 +436,15 @@
 			<zipfileset dir="${opencms.output.classes}" prefix="setup" includes="license.html" />
 			<zipfileset dir="${opencms.output.classes}" prefix="setup" includes="license.html" />
 		</war>
+    	
+		<!--
+			copy War-Skeleton without Modules to opencms-webapp-${version.number}.war
+			This War-Skeleton will be deployed to the Maven Repository as groupId=org.opencms and artifactId=opencms-webapp
+		 -->
+    	<delete failonerror="no" file="${opencms.build}/${app.name}-webapp-${version.number}.war" />
+    	<copy file="${opencms.build}/${app.name}.war"
+    		tofile="${opencms.build}/${app.name}-webapp-${version.number}.war" />
+    	
 	</target>
 
 
@@ -608,6 +638,12 @@
 
 		<jar jarfile="${opencms.output.jars}/opencms-setup.jar" basedir="${opencms.output}/build/setup" includes="org/opencms/**" />
 
+    	<!-- create Source-Archive to include it into the Eclipse-Configuration. -->
+    	<delete file="${opencms.output.jars}/opencms-setup_${version.number}_sources.jar" failonerror="no"/>
+        <jar destfile="${opencms.output.jars}/opencms-setup_${version.number}_sources.jar">
+        	<zipfileset dir="${opencms.input}/src-setup" excludes="${excludes}" />
+            <zipfileset dir="${opencms.input}" includes="license.txt" prefix="META-INF"/>
+        </jar>
 	</target>
 
 
@@ -713,4 +749,278 @@
 		<copy todir="${opencms.input}/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/components/upload_applet/" file="${opencms.output}/upload/upload.jar" />
 	</target>
 
+    <target name="maven-install-core" description="install the ${opencms.output.jars}/opencms.jar into the locale Maven Repository">
+
+    	<artifact:pom id="pom-opencms-core" file="pom-opencms-core.xml" />
+		<artifact:install file="${opencms.output.jars}/opencms.jar">
+			<pom refid="pom-opencms-core"/>
+			<attach file="${opencms.output.jars}/opencms_${version.number}_sources.jar" type="jar" classifier="sources" />
+	    	<attach file="${opencms.output.jars}/opencms_${version.number}_tests.jar" type="test-jar" />
+	    	<attach file="${opencms.output.jars}/opencms_${version.number}_test_sources.jar" type="test-jar" classifier="test-sources" />
+    	</artifact:install>
+    	
+    </target>
+	
+    <target name="maven-install-setup" description="install the OpenCms-Artifacts into the locale Maven Repository">
+    	
+    	<artifact:pom id="pom-opencms-setup" file="pom-opencms-setup.xml" />
+		<artifact:install file="${opencms.output.jars}/opencms-setup.jar">
+			<pom refid="pom-opencms-setup"/>
+			<attach file="${opencms.output.jars}/opencms-setup_${version.number}_sources.jar" type="jar" classifier="sources" />
+		</artifact:install>
+    	
+    </target>
+	
+    <target name="maven-install-webapp" description="install the WebApp-Skeleton (without modules) into the locale Maven Repository">
+
+    	<artifact:pom id="pom-opencms-webapp" file="pom-opencms-webapp.xml" />
+		<artifact:install file="${opencms.build}/${app.name}-webapp-${version.number}.war">
+			<pom refid="pom-opencms-webapp"/>
+		</artifact:install>
+    	
+    </target>
+	
+    <target name="maven-install-new-modules">
+		<!-- read list of all available modules -->
+    	<property file="${opencms.input}/modules/all-modules.properties" />
+
+    	<ant antfile="${opencms.input}/modules/build.xml" target="maven-install" inheritAll="false" >
+	  		<property name="version.number" value="${version.number}" />
+	  		<property name="modules.common.selection" value="${modules.common.all}" />
+	  		<property name="modules.selection.mode" value="selection" />
+	  		<property name="app.name" value="${app.name}" />
+	  	</ant>
+    </target>
+	
+    <target name="maven-install-all-modules">
+		<!-- read list of all available modules -->
+    	<property file="${opencms.input}/modules/all-modules.properties" />
+
+    	<ant antfile="${opencms.input}/modules/build.xml" target="maven-install-all" inheritAll="false" >
+	  		<property name="modules.common.selection" value="${modules.common.all}" />
+	  		<property name="modules.selection.mode" value="selection" />
+	  		<property name="app.name" value="${app.name}" />
+	  	</ant>
+    </target>
+	
+    <target name="maven-deploy-core" description="install the ${opencms.output.jars}/opencms.jar into the locale Maven Repository">
+		<!-- required for Transport-protocol -->
+		<artifact:install-provider artifactId="wagon-ssh" version="2.2"/>
+
+		<!-- sign and deploy the Jar artifact -->
+		<artifact:mvn>
+			<arg value="org.apache.maven.plugins:maven-gpg-plugin:1.3:sign-and-deploy-file" />
+			<arg value="-Durl=${maven-staging-repository-url}" />
+			<arg value="-DrepositoryId=${maven-staging-repository-id}" />
+			<arg value="-DpomFile=pom-opencms-core.xml" />
+			<arg value="-Dfile=${opencms.output.jars}/opencms.jar" />
+            <arg value="-Pgpg" />
+		</artifact:mvn>
+		<!-- sign and deploy the sources artifact -->
+		<artifact:mvn>
+			<arg value="org.apache.maven.plugins:maven-gpg-plugin:1.3:sign-and-deploy-file" />
+			<arg value="-Durl=${maven-staging-repository-url}" />
+			<arg value="-DrepositoryId=${maven-staging-repository-id}" />
+			<arg value="-DpomFile=pom-opencms-core.xml" />
+			<arg value="-Dfile=${opencms.output.jars}/opencms_${version.number}_sources.jar" />
+			<arg value="-Dclassifier=sources" />
+            <arg value="-Pgpg" />
+		</artifact:mvn>
+		<!-- sign and deploy the javadoc artifact -->
+		<artifact:mvn>
+			<arg value="org.apache.maven.plugins:maven-gpg-plugin:1.3:sign-and-deploy-file" />
+			<arg value="-Durl=${maven-staging-repository-url}" />
+			<arg value="-DrepositoryId=${maven-staging-repository-id}" />
+			<arg value="-DpomFile=pom-opencms-core.xml" />
+			<arg value="-Dfile=${opencms.output.jars}/opencms_${version.number}_javadoc.jar" />
+			<arg value="-Dclassifier=javadoc" />
+            <arg value="-Pgpg" />
+		</artifact:mvn>
+		<!-- sign and deploy the tests artifact -->
+		<artifact:mvn>
+			<arg value="org.apache.maven.plugins:maven-gpg-plugin:1.3:sign-and-deploy-file" />
+			<arg value="-Durl=${maven-staging-repository-url}" />
+			<arg value="-DrepositoryId=${maven-staging-repository-id}" />
+			<arg value="-DpomFile=pom-opencms-core.xml" />
+			<arg value="-Dfile=${opencms.output.jars}/opencms_${version.number}_tests.jar" />
+			<arg value="-Dclassifier=tests" />
+            <arg value="-Pgpg" />
+		</artifact:mvn>
+		<!-- sign and deploy the test-sources artifact -->
+		<artifact:mvn>
+			<arg value="org.apache.maven.plugins:maven-gpg-plugin:1.3:sign-and-deploy-file" />
+			<arg value="-Durl=${maven-staging-repository-url}" />
+			<arg value="-DrepositoryId=${maven-staging-repository-id}" />
+			<arg value="-DpomFile=pom-opencms-core.xml" />
+			<arg value="-Dfile=${opencms.output.jars}/opencms_${version.number}_test_sources.jar" />
+			<arg value="-Dclassifier=test-sources" />
+            <arg value="-Pgpg" />
+		</artifact:mvn>
+
+		<delete file="pom-opencms-core.xml.asc" failonerror="false" />
+    </target>
+	
+    <target name="maven-deploy-setup" description="install the OpenCms-Artifacts into the locale Maven Repository">
+		<!-- required for Transport-protocol -->
+		<artifact:install-provider artifactId="wagon-ssh" version="2.2"/>
+    	
+
+		<!-- sign and deploy the Jar artifact -->
+		<artifact:mvn>
+			<arg value="org.apache.maven.plugins:maven-gpg-plugin:1.3:sign-and-deploy-file" />
+			<arg value="-Durl=${maven-staging-repository-url}" />
+			<arg value="-DrepositoryId=${maven-staging-repository-id}" />
+			<arg value="-DpomFile=pom-opencms-setup.xml" />
+			<arg value="-Dfile=${opencms.output.jars}/opencms-setup.jar" />
+            <arg value="-Pgpg" />
+		</artifact:mvn>
+		<!-- sign and deploy the sources artifact -->
+		<artifact:mvn>
+			<arg value="org.apache.maven.plugins:maven-gpg-plugin:1.3:sign-and-deploy-file" />
+			<arg value="-Durl=${maven-staging-repository-url}" />
+			<arg value="-DrepositoryId=${maven-staging-repository-id}" />
+			<arg value="-DpomFile=pom-opencms-setup.xml" />
+			<arg value="-Dfile=${opencms.output.jars}/opencms-setup_${version.number}_sources.jar" />
+			<arg value="-Dclassifier=sources" />
+            <arg value="-Pgpg" />
+		</artifact:mvn>
+		<!-- sign and deploy the javadoc artifact -->
+		<artifact:mvn>
+			<arg value="org.apache.maven.plugins:maven-gpg-plugin:1.3:sign-and-deploy-file" />
+			<arg value="-Durl=${maven-staging-repository-url}" />
+			<arg value="-DrepositoryId=${maven-staging-repository-id}" />
+			<arg value="-DpomFile=pom-opencms-setup.xml" />
+			<arg value="-Dfile=${opencms.output.jars}/opencms-setup_${version.number}_javadoc.jar" />
+			<arg value="-Dclassifier=javadoc" />
+            <arg value="-Pgpg" />
+		</artifact:mvn>
+
+		<delete file="pom-opencms-setup.xml.asc" failonerror="false" />
+    </target>
+	
+    <target name="maven-deploy-webapp" description="install the WebApp-Skeleton (without modules) into the locale Maven Repository">
+		<!-- required for Transport-protocol -->
+		<artifact:install-provider artifactId="wagon-ssh" version="2.2"/>
+
+		<!-- sign and deploy the Jar artifact -->
+		<artifact:mvn>
+			<arg value="org.apache.maven.plugins:maven-gpg-plugin:1.3:sign-and-deploy-file" />
+			<arg value="-Durl=${maven-staging-repository-url}" />
+			<arg value="-DrepositoryId=${maven-staging-repository-id}" />
+			<arg value="-DpomFile=pom-opencms-webapp.xml" />
+			<arg value="-Dfile=${opencms.build}/${app.name}-webapp-${version.number}.war" />
+            <arg value="-Pgpg" />
+		</artifact:mvn>
+
+		<delete file="pom-opencms-webapp.xml.asc" failonerror="false" />
+    </target>
+	
+    <target name="maven-deploy-new-modules">
+		<!-- read list of all available modules -->
+    	<property file="${opencms.input}/modules/all-modules.properties" />
+    	
+    	<ant antfile="${opencms.input}/modules/build.xml" target="maven-deploy" inheritAll="false" >
+	  		<property name="version.number" value="${version.number}" />
+	  		<property name="modules.common.selection" value="${modules.common.all}" />
+	  		<property name="modules.selection.mode" value="selection" />
+	  		<property name="app.name" value="${app.name}" />
+	  	</ant>
+    </target>
+	
+    <target name="maven-deploy-all-modules">
+		<!-- read list of all available modules -->
+    	<property file="${opencms.input}/modules/all-modules.properties" />
+    	
+    	<ant antfile="${opencms.input}/modules/build.xml" target="maven-deploy-all" inheritAll="false" >
+	  		<property name="modules.common.selection" value="${modules.common.all}" />
+	  		<property name="modules.selection.mode" value="selection" />
+	  		<property name="app.name" value="${app.name}" />
+	  	</ant>
+    </target>
+	
+    <target name="maven-dependencies-test" description="copy dependencies configured in pom-opencms-core.xml to ${opencms.build}/dependencies">
+
+    	<artifact:pom id="pom-opencms-core" file="pom-opencms-core.xml" />
+    
+    	<artifact:dependencies filesetId="dependency.fileset" useScope="runtime">
+			<pom refid="pom-opencms-core"/>
+    	</artifact:dependencies>
+    	
+    	<copy todir="${opencms.build}/dependencies">
+    	  <fileset refid="dependency.fileset" />
+    	  <!-- This mapper strips off all leading directory information -->
+    	  <mapper type="flatten" />
+    	</copy>
+    	
+    	
+    </target>
+
+    <target name="maven-build-all-artifacts" description="Create all Artifacts (opencms-core and Modules) with /modules/build.xml => target 'war'">
+		<!-- read list of all available modules -->
+    	<property file="${opencms.input}/modules/all-modules.properties" />
+    	<!-- build war with all modules -->
+	  	<ant antfile="${opencms.input}/modules/build.xml" target="war" inheritAll="false" >
+	  		<property name="modules.common.selection" value="${modules.common.all}" />
+	  		<property name="modules.selection.mode" value="selection" />
+	  		<property name="app.name" value="${app.name}" />
+	  	</ant>
+    	
+    </target>
+
+	<target name="maven-build-test-jar" depends="compile-tests"
+		description="Create UnitTest-Jar of the Test-Classes (Helper-Classes to create UnitTests in OpenCms-Modules)">
+		
+        <jar jarfile="${opencms.output.jars}/opencms_${version.number}_tests.jar"
+            basedir="${opencms.output.tests}" excludes="**/data/**" />
+
+    	<!-- create Source-Archive to include it into the Eclipse-Configuration. -->
+    	<delete file="${opencms.output.jars}/opencms_${version.number}_test_sources.jar" failonerror="no"/>
+        <jar destfile="${opencms.output.jars}/opencms_${version.number}_test_sources.jar">
+        	<zipfileset dir="${opencms.input}/test" excludes="**/data/**" />
+            <zipfileset dir="${opencms.input}" includes="license.txt" prefix="META-INF"/>
+        </jar>
+		
+	</target>
+
+	<target name="maven-build-javadoc-jar"
+		description="Create JavaDoc-Jar of the Core and Setup Classes">
+		
+
+		<!-- run JavaDoc creation -->
+    	<ant antfile="${opencms.input}/doc/javadoc/javadoc-core.xml" target="javadoc" inheritAll="false" />
+    	<ant antfile="${opencms.input}/doc/javadoc/javadoc-setup.xml" target="javadoc" inheritAll="false">
+	  		<property name="version.number" value="${version.number}" />
+	  	</ant>
+		
+    	<!-- create Source-Archive to include it into the Eclipse-Configuration. -->
+    	<delete file="${opencms.output.jars}/opencms_${version.number}_javadoc.jar" failonerror="no"/>
+        <jar destfile="${opencms.output.jars}/opencms_${version.number}_javadoc.jar">
+        	<zipfileset dir="${opencms.output}/doc/core" />
+        </jar>
+    	<delete file="${opencms.output.jars}/opencms-setup_${version.number}_javadoc.jar" failonerror="no"/>
+        <jar destfile="${opencms.output.jars}/opencms-setup_${version.number}_javadoc.jar">
+        	<zipfileset dir="${opencms.output}/doc/core" />
+        </jar>
+		
+	</target>
+	
+    <target name="maven-install-init-all"
+    	depends="maven-build-all-artifacts, maven-build-test-jar, maven-build-javadoc-jar, maven-install-core, maven-install-setup, maven-install-webapp, maven-install-all-modules"
+    	description="initial install of all current OpenCms-Artifacts into the locale Maven Repository">
+    </target>
+	
+    <target name="maven-install-with-new-modules"
+    	depends="maven-build-all-artifacts, maven-build-test-jar, maven-build-javadoc-jar, maven-install-core, maven-install-setup, maven-install-webapp, maven-install-new-modules"
+    	description="install only new opencms-modules, who matches the opencms-core version.number">
+    </target>
+	
+    <target name="maven-deploy-init-all"
+    	depends="maven-build-all-artifacts, maven-build-test-jar, maven-build-javadoc-jar, maven-deploy-core, maven-deploy-setup, maven-deploy-webapp, maven-deploy-all-modules"
+    	description="initial deploy of all current OpenCms-Artifacts into the global Maven Repository">
+    </target>
+	
+    <target name="maven-deploy-with-new-modules"
+    	depends="maven-build-all-artifacts, maven-build-test-jar, maven-build-javadoc-jar, maven-deploy-core, maven-deploy-setup, maven-deploy-webapp, maven-deploy-new-modules"
+    	description="deploy only new opencms-modules, who matches the opencms-core version.number">
+    </target>
 </project>
