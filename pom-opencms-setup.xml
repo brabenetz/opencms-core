@@ -3,7 +3,7 @@
 	<groupId>org.opencms</groupId>
 	<artifactId>opencms-setup</artifactId>
 	<packaging>jar</packaging>
-	<version>8.0.4</version>
+	<version>8.5.0</version>
 	<name>opencms-setup</name>
 	<url>http://opencms.org</url>
 

@@ -4,7 +4,7 @@
 	<groupId>org.opencms</groupId>
 	<artifactId>opencms-core</artifactId>
 	<packaging>jar</packaging>
-	<version>8.0.4</version>
+	<version>8.5.0</version>
 	<name>opencms-core</name>
 	<url>http://opencms.org</url>
 
@@ -131,7 +131,34 @@
 		<dependency>
 			<groupId>com.alkacon</groupId>
 			<artifactId>alkacon-simapi</artifactId>
-			<version>0.9.8</version>
+			<version>1.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.alkacon</groupId>
+			<artifactId>acacia-editor-shared</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<dependency>
+			<!-- Since OpenCms 8.5.0 -->
+			<groupId>org.owasp.antisamy</groupId>
+			<artifactId>antisamy</artifactId>
+			<version>1.4.4</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.xmlgraphics</groupId>
+					<artifactId>batik-ext</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>xml-apis</groupId>
+					<artifactId>xml-apis-ext</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.chemistry.opencmis</groupId>
+			<artifactId>chemistry-opencmis-server-bindings</artifactId>
+			<version>0.7.0</version>
+			<classifier>classes</classifier>
 		</dependency>
 		<dependency>
 			<groupId>commons-beanutils</groupId>
@@ -141,7 +168,7 @@
 		<dependency>
 			<groupId>commons-codec</groupId>
 			<artifactId>commons-codec</artifactId>
-			<version>1.3</version>
+			<version>1.6</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-collections</groupId>
@@ -176,12 +203,12 @@
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
-			<version>1.4</version>
+			<version>2.1</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
-			<version>2.4</version>
+			<version>2.6</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-logging</groupId>
@@ -241,9 +268,15 @@
 			<groupId>org.apache.bval</groupId>
 			<artifactId>org.apache.bval.bundle</artifactId>
 			<version>0.3-incubating</version>
+			<exclusions>
+				<exclusion>
+					<groupId>commons-beanutils</groupId>
+					<artifactId>commons-beanutils-core</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
-			<!-- OpenCms use normaly r08 -->
+			<!-- this lib only available since version 10 (OpenCms use normaly r08) -->
 		    <groupId>com.google.guava</groupId>
 		    <artifactId>guava</artifactId>
 		    <version>10.0.1</version>
@@ -290,6 +323,16 @@
 			</exclusions>
 		</dependency>
 		<dependency>
+		    <groupId>javax.jws</groupId>
+		    <artifactId>jsr181-api</artifactId>
+		    <version>1.0-MR1</version>
+		</dependency>
+		<dependency>
+		    <groupId>javax.annotation</groupId>
+		    <artifactId>jsr250-api</artifactId>
+		    <version>1.0</version>
+		</dependency>
+		<dependency>
 		    <groupId>com.google.code.findbugs</groupId>
 		    <artifactId>jsr305</artifactId>
 		    <version>1.3.9</version>
@@ -311,6 +354,12 @@
 			<artifactId>jug</artifactId>
 			<version>2.0.0</version>
 			<classifier>lgpl</classifier>
+		</dependency>
+		<dependency>
+			<!-- since OpenCms 8.5.0 -->
+		    <groupId>com.googlecode.json-simple</groupId>
+		    <artifactId>json-simple</artifactId>
+		    <version>1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>
@@ -339,27 +388,42 @@
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
 			<artifactId>lucene-analyzers</artifactId>
-			<version>3.5.0</version>
+			<version>3.6.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
 			<artifactId>lucene-core</artifactId>
-			<version>3.5.0</version>
+			<version>3.6.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
 			<artifactId>lucene-highlighter</artifactId>
-			<version>3.5.0</version>
+			<version>3.6.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
 			<artifactId>lucene-memory</artifactId>
-			<version>3.5.0</version>
+			<version>3.6.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-grouping</artifactId>
+			<version>3.6.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-spatial</artifactId>
+			<version>3.6.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-spellchecker</artifactId>
+			<version>3.6.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
 			<artifactId>lucene-queries</artifactId>
-			<version>3.5.0</version>
+			<version>3.6.1</version>
 			<exclusions>
 				<exclusion>
 					<groupId>jakarta-regexp</groupId>
@@ -373,6 +437,16 @@
 			<version>1.4.1</version>
 		</dependency>
 		<dependency>
+			<groupId>net.sourceforge.nekohtml</groupId>
+			<artifactId>nekohtml</artifactId>
+			<version>1.9.15</version>
+		</dependency>
+		<dependency>
+		    <groupId>net.sf.opencsv</groupId>
+		    <artifactId>opencsv</artifactId>
+		    <version>2.3</version>
+		</dependency>
+		<dependency>
 			<groupId>org.apache.openjpa</groupId>
 			<artifactId>openjpa</artifactId>
 			<version>2.2.0</version>
@@ -382,6 +456,12 @@
 			<groupId>org.apache.pdfbox</groupId>
 			<artifactId>pdfbox</artifactId>
 			<version>1.5.0</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.pdfbox</groupId>
+					<artifactId>jempbox</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.bouncycastle</groupId>
@@ -393,7 +473,7 @@
 			<!-- includes dependecy to poi and poi-ooxml-schemas -->
 		    <groupId>org.apache.poi</groupId>
 		    <artifactId>poi-ooxml</artifactId>
-		    <version>3.7</version>
+		    <version>3.8</version>
 			<exclusions>
 				<!-- Not used in OpenCms: -->
 				<exclusion>
@@ -409,13 +489,13 @@
 		<dependency>
 		    <groupId>org.apache.poi</groupId>
 		    <artifactId>poi-scratchpad</artifactId>
-		    <version>3.7</version>
+		    <version>3.8</version>
 		</dependency>
 		<dependency>
 			<!-- Apache Tika - a content analysis toolkit -->
 		    <groupId>org.apache.tika</groupId>
 		    <artifactId>tika-parsers</artifactId>
-		    <version>0.9</version>
+		    <version>1.1</version>
 			<exclusions>
 				<!-- Not used in OpenCms: -->
 				<exclusion>
@@ -425,6 +505,18 @@
 				<exclusion>
 					<groupId>org.apache.james</groupId>
 					<artifactId>apache-mime4j</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.james</groupId>
+					<artifactId>apache-mime4j-core</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.james</groupId>
+					<artifactId>apache-mime4j-dom</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.googlecode.mp4parser</groupId>
+					<artifactId>isoparser</artifactId>
 				</exclusion>
 				<exclusion>
 					<groupId>org.apache.commons</groupId>
@@ -454,7 +546,20 @@
 					<groupId>com.drewnoakes</groupId>
 					<artifactId>metadata-extractor</artifactId>
 				</exclusion>
+				<exclusion>
+					<groupId>org.gagravarr</groupId>
+					<artifactId>vorbis-java-tika</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.gagravarr</groupId>
+					<artifactId>vorbis-java-core</artifactId>
+				</exclusion>
 			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.codehaus.woodstox</groupId>
+			<artifactId>wstx-asl</artifactId>
+			<version>3.2.7</version>
 		</dependency>
 		<dependency>
 			<groupId>quartz</groupId>
@@ -469,12 +574,47 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>1.6.1</version>
+			<version>1.7.1</version>
 		</dependency>
+		<!-- 
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-jdk14</artifactId>
-			<version>1.6.1</version>
+			<version>1.7.1</version>
+		</dependency>
+		 --> 
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.7.1</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.apache.solr</groupId>
+		    <artifactId>solr-core</artifactId>
+		    <version>3.6.1</version>
+		    <exclusions>
+		    	<exclusion>
+		    		<groupId>org.apache.lucene</groupId>
+		    		<artifactId>lucene-kuromoji</artifactId>
+		    	</exclusion>
+		    	<exclusion>
+		    		<groupId>org.apache.lucene</groupId>
+		    		<artifactId>lucene-misc</artifactId>
+		    	</exclusion>
+		    	<exclusion>
+		    		<groupId>org.apache.lucene</groupId>
+		    		<artifactId>lucene-phonetic</artifactId>
+		    	</exclusion>
+		    	<exclusion>
+		    		<groupId>org.slf4j</groupId>
+		    		<artifactId>jcl-over-slf4j</artifactId>
+		    	</exclusion>
+		    </exclusions>
+		</dependency>
+		<dependency>
+		    <groupId>org.apache.solr</groupId>
+		    <artifactId>solr-solrj</artifactId>
+		    <version>3.6.1</version>
 		</dependency>
 		<dependency>
 			<groupId>taglibs</groupId>
@@ -482,14 +622,17 @@
 			<version>1.1.2</version>
 		</dependency>
 		<dependency>
+			<!-- xml-apis-2.11-0.jar in OpenCms is the Version 1.4.01 -->
 			<groupId>xml-apis</groupId>
 			<artifactId>xml-apis</artifactId>
-			<version>1.3.04</version>
+			<version>1.4.01</version>
 		</dependency>
 		<dependency>
+			<!-- OpenCms 8.5 has bin updated to xercesImpl 2.11, -->
+			<!-- but only 2.10 is available in the maven central repo (2012-11-11) -->
 			<groupId>xerces</groupId>
 			<artifactId>xercesImpl</artifactId>
-			<version>2.9.1</version>
+			<version>2.10.0</version>
 			<exclusions>
 				<exclusion>
 					<groupId>xml-apis</groupId>

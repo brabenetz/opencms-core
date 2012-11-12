@@ -3,7 +3,7 @@
 	<groupId>org.opencms</groupId>
 	<artifactId>opencms-webapp</artifactId>
 	<packaging>war</packaging>
-	<version>8.0.4</version>
+	<version>8.5.0</version>
 	<name>opencms-webapp</name>
 	<url>http://opencms.org</url>
 
@@ -113,12 +113,12 @@
 		<dependency>
 			<groupId>org.opencms</groupId>
 			<artifactId>opencms-core</artifactId>
-			<version>8.0.4</version>
+			<version>8.5.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.opencms</groupId>
 			<artifactId>opencms-setup</artifactId>
-			<version>8.0.4</version>
+			<version>8.5.0</version>
 		</dependency>
 	</dependencies>
 

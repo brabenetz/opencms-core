@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="Javadoc OpenCms Setup" default="javadoc">
 
-    <property name="version.number"             		value="8.0.4" />
+    <property name="version.number"             		value="8.5.0" />
 	<property name="opencms.input" 						value="../../"/>
     <property name="opencms.input.libs.runtime"			location="${opencms.input}/lib/runtime" />
     <property name="opencms.input.libs.compile"			location="${opencms.input}/lib/compile" />

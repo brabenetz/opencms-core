@@ -445,10 +445,9 @@
 						<java dir="${basedir}" 
 									  classname="com.google.gwt.dev.Compiler" 
 									  fork="yes" 
-									  failonerror="true"
-									  maxmemory="1024m">
+									  failonerror="true">
 				  			<jvmarg value="-Xms128m" />
-				  			<jvmarg value="-Xmx1024m" />
+				  			<jvmarg value="-Xmx2024m" />
 				  			<jvmarg value="-XX:PermSize=64m" />
 				  			<jvmarg value="-XX:MaxPermSize=512m" />
 							<!--	<arg value="-XdisableClassMetadata" />
