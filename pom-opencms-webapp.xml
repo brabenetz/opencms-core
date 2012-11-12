@@ -58,9 +58,9 @@
 	</licenses>
 
 	<scm>
-		<url>git@github.com:alkacon/opencms-core.git</url>
-		<connection>scm:git:git@github.com:alkacon/opencms-core.git</connection>
-		<developerConnection>scm:git:git@github.com:alkacon/opencms-core.git</developerConnection>
+		<url>https://github.com/brabenetz/opencms-core</url>
+		<connection>scm:git:git@github.com:brabenetz/opencms-core.git</connection>
+		<developerConnection>scm:git:git@github.com:brabenetz/opencms-core.git</developerConnection>
 	</scm>
 	
 	<build>
