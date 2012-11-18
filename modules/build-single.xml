@@ -43,7 +43,7 @@
 					<property name="@{result}" value="${basedir}/@{name}" />
 				</then>
 			</if>
-			
+
 			<for list="${externaldirectories}" param="exdir">
 				<sequential>
 					<if>
@@ -825,11 +825,8 @@
 
 	<target name="jboss.update" depends="jboss.copy" description="Recompile changes and installs them in JBoss deploy directory" />
 
-	<target name="maven-read-manifest" description="read manifest to module.version, module.dependencies, module.description">
-
-		<property name="module.input" 				value="${basedir}/${module.name}" />
-		<property name="module.input.res" 			value="${module.input}/resources" />
-
+	<target name="maven-read-manifest" depends="init" description="read manifest to module.version, module.dependencies, module.description">
+		
 		<if>
 			<available file="${module.input.res}/manifest.xml" />
 			<then>
@@ -931,10 +928,11 @@
 			</and>
 			<then>
 				<!-- Jar and Java-Sources are available -->
-				<echo message="install module '${module.name}-${module.version}' (Module-zip, Classes-Jar, Sources-Jar)" />
+				<echo message="install module '${module.name}-${module.version}' (Module-zip, Classes-Jar, Sources-Jar, Javadoc-Jar)" />
 				<artifact:pom id="pom-module" file="${module.input}/pom.xml" />
 				<artifact:install file="${module.output.jar}/${module.name}.jar">
 					<pom refid="pom-module"/>
+					<attach file="${module.output.jar}/${module.name}_${module.version}_javadoc.jar" type="jar" classifier="javadoc" />
 					<attach file="${module.output.jar}/${module.name}_${module.version}_sources.jar" type="jar" classifier="sources" />
 					<attach file="${module.output.zip}/${module.name}_${module.version}.zip" type="zip" classifier="opencms-module" />
 				</artifact:install>

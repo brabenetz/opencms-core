@@ -781,23 +781,17 @@
     </target>
 	
     <target name="maven-install-new-modules">
-		<!-- read list of all available modules -->
-    	<property file="${opencms.input}/modules/all-modules.properties" />
-
     	<ant antfile="${opencms.input}/modules/build.xml" target="maven-install" inheritAll="false" >
 	  		<property name="version.number" value="${version.number}" />
-	  		<property name="modules.common.selection" value="${modules.common.all}" />
+	  		<property name="modules.common.selection" value="${modules.common.selection}" />
 	  		<property name="modules.selection.mode" value="selection" />
 	  		<property name="app.name" value="${app.name}" />
 	  	</ant>
     </target>
 	
     <target name="maven-install-all-modules">
-		<!-- read list of all available modules -->
-    	<property file="${opencms.input}/modules/all-modules.properties" />
-
     	<ant antfile="${opencms.input}/modules/build.xml" target="maven-install-all" inheritAll="false" >
-	  		<property name="modules.common.selection" value="${modules.common.all}" />
+	  		<property name="modules.common.selection" value="${modules.common.selection}" />
 	  		<property name="modules.selection.mode" value="selection" />
 	  		<property name="app.name" value="${app.name}" />
 	  	</ant>
@@ -955,18 +949,6 @@
     	
     </target>
 
-    <target name="maven-build-all-artifacts" description="Create all Artifacts (opencms-core and Modules) with /modules/build.xml => target 'war'">
-		<!-- read list of all available modules -->
-    	<property file="${opencms.input}/modules/all-modules.properties" />
-    	<!-- build war with all modules -->
-	  	<ant antfile="${opencms.input}/modules/build.xml" target="war" inheritAll="false" >
-	  		<property name="modules.common.selection" value="${modules.common.all}" />
-	  		<property name="modules.selection.mode" value="selection" />
-	  		<property name="app.name" value="${app.name}" />
-	  	</ant>
-    	
-    </target>
-
 	<target name="maven-build-test-jar" depends="compile-tests"
 		description="Create UnitTest-Jar of the Test-Classes (Helper-Classes to create UnitTests in OpenCms-Modules)">
 		
@@ -1005,22 +987,22 @@
 	</target>
 	
     <target name="maven-install-init-all"
-    	depends="maven-build-all-artifacts, maven-build-test-jar, maven-build-javadoc-jar, maven-install-core, maven-install-setup, maven-install-webapp, maven-install-all-modules"
+    	depends="bindist, maven-build-test-jar, maven-build-javadoc-jar, maven-install-core, maven-install-setup, maven-install-webapp, maven-install-all-modules"
     	description="initial install of all current OpenCms-Artifacts into the locale Maven Repository">
     </target>
 	
     <target name="maven-install-with-new-modules"
-    	depends="maven-build-all-artifacts, maven-build-test-jar, maven-build-javadoc-jar, maven-install-core, maven-install-setup, maven-install-webapp, maven-install-new-modules"
+    	depends="bindist, maven-build-test-jar, maven-build-javadoc-jar, maven-install-core, maven-install-setup, maven-install-webapp, maven-install-new-modules"
     	description="install only new opencms-modules, who matches the opencms-core version.number">
     </target>
 	
     <target name="maven-deploy-init-all"
-    	depends="maven-build-all-artifacts, maven-build-test-jar, maven-build-javadoc-jar, maven-deploy-core, maven-deploy-setup, maven-deploy-webapp, maven-deploy-all-modules"
+    	depends="bindist, maven-build-test-jar, maven-build-javadoc-jar, maven-deploy-core, maven-deploy-setup, maven-deploy-webapp, maven-deploy-all-modules"
     	description="initial deploy of all current OpenCms-Artifacts into the global Maven Repository">
     </target>
 	
     <target name="maven-deploy-with-new-modules"
-    	depends="maven-build-all-artifacts, maven-build-test-jar, maven-build-javadoc-jar, maven-deploy-core, maven-deploy-setup, maven-deploy-webapp, maven-deploy-new-modules"
+    	depends="bindist, maven-build-test-jar, maven-build-javadoc-jar, maven-deploy-core, maven-deploy-setup, maven-deploy-webapp, maven-deploy-new-modules"
     	description="deploy only new opencms-modules, who matches the opencms-core version.number">
     </target>
 </project>
