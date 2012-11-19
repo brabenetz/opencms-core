@@ -789,10 +789,10 @@
 	  	</ant>
     </target>
 	
-    <target name="maven-install-all-modules">
+    <target name="maven-install-modules-only-interactiv">
     	<ant antfile="${opencms.input}/modules/build.xml" target="maven-install-all" inheritAll="false" >
 	  		<property name="modules.common.selection" value="${modules.common.selection}" />
-	  		<property name="modules.selection.mode" value="selection" />
+	  		<property name="modules.selection.mode" value="interactive" />
 	  		<property name="app.name" value="${app.name}" />
 	  	</ant>
     </target>
@@ -910,24 +910,18 @@
     </target>
 	
     <target name="maven-deploy-new-modules">
-		<!-- read list of all available modules -->
-    	<property file="${opencms.input}/modules/all-modules.properties" />
-    	
     	<ant antfile="${opencms.input}/modules/build.xml" target="maven-deploy" inheritAll="false" >
 	  		<property name="version.number" value="${version.number}" />
-	  		<property name="modules.common.selection" value="${modules.common.all}" />
+	  		<property name="modules.common.selection" value="${modules.common.selection}" />
 	  		<property name="modules.selection.mode" value="selection" />
 	  		<property name="app.name" value="${app.name}" />
 	  	</ant>
     </target>
 	
-    <target name="maven-deploy-all-modules">
-		<!-- read list of all available modules -->
-    	<property file="${opencms.input}/modules/all-modules.properties" />
-    	
+    <target name="maven-deploy-modules-only-interactiv">
     	<ant antfile="${opencms.input}/modules/build.xml" target="maven-deploy-all" inheritAll="false" >
-	  		<property name="modules.common.selection" value="${modules.common.all}" />
-	  		<property name="modules.selection.mode" value="selection" />
+	  		<property name="modules.common.selection" value="${modules.common.selection}" />
+	  		<property name="modules.selection.mode" value="interactive" />
 	  		<property name="app.name" value="${app.name}" />
 	  	</ant>
     </target>
@@ -986,8 +980,8 @@
 		
 	</target>
 	
-    <target name="maven-install-init-all"
-    	depends="bindist, maven-build-test-jar, maven-build-javadoc-jar, maven-install-core, maven-install-setup, maven-install-webapp, maven-install-all-modules"
+    <target name="maven-install-modules-interactiv"
+    	depends="bindist, maven-install-modules-only-interactiv"
     	description="initial install of all current OpenCms-Artifacts into the locale Maven Repository">
     </target>
 	
@@ -996,8 +990,8 @@
     	description="install only new opencms-modules, who matches the opencms-core version.number">
     </target>
 	
-    <target name="maven-deploy-init-all"
-    	depends="bindist, maven-build-test-jar, maven-build-javadoc-jar, maven-deploy-core, maven-deploy-setup, maven-deploy-webapp, maven-deploy-all-modules"
+    <target name="maven-deploy-modules-interactiv"
+    	depends="bindist, maven-deploy-modules-only-interactiv"
     	description="initial deploy of all current OpenCms-Artifacts into the global Maven Repository">
     </target>
 	
