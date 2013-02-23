@@ -87,12 +87,14 @@
     </typedef>
 
 	<property name="module.output.classes" location="${opencms.build}/classes-${module.name}" />
+	<property name="module.output.gwt.client.classes" location="${opencms.build}/classes-${module.name}-client" />
 	<property name="module.output.jar" location="${opencms.build}/jars-${module.name}" />
 	<property name="module.output.zip" location="${opencms.output}/zip" />
 
 	<property name="app.name" value="opencms" />
 
 	<property name="jar.excludes" value="**/CVS/*,**/.cvsignore,**/.nbattrs,**/.project,**/.classpath,*.gwt.xml" />
+	<property name="jar.gwt.excludes" value="**/CVS/*,**/.cvsignore,**/.nbattrs,**/.project,**/.classpath" />
 	<property name="zip.excludes" value="**/CVS/*,**/.cvsignore,**/.nbattrs,**/.project,**/.classpath" />
 	<property name="jar.includes.single" value="**/*.properties,**/*.txt,**/*.dtd,**/*.xml,**/*.sql,**/*.gwt.rpc" />
 	<property name="jar.includes.shared" value="*.properties,*.txt,*.dtd,*.xml,*.sql,*.gwt.rpc" />
@@ -491,6 +493,56 @@
 						<delete dir="${module.gwt.output}/../../gwt-unitCache" failonerror="false" />
 					</sequential>
 				</outofdate>
+
+				<!-- Create client JAR -->
+				<echo message="Create GWT client JAR" />
+				<mkdir dir="${module.output.gwt.client.classes}" />
+				<javac 
+					srcdir="${module.input.src.gwt}" 
+					destdir="${module.output.gwt.client.classes}" 
+					debug="on" 
+					optimize="on" 
+					deprecation="on" 
+					includes="${module.package}/client/**.java" 
+					source="1.5" 
+					target="${java.target.version}">
+
+					<classpath>
+						<fileset dir="${opencms.input.libs.runtime}">
+							<include name="**/*.jar" />
+						</fileset>
+						<fileset dir="${opencms.input.libs.compile}">
+							<include name="**/*.jar" />
+						</fileset>
+						<fileset dir="${opencms.output.jars}">
+							<include name="**/*.jar" />
+						</fileset>
+						<pathelement path="${module.input.src.single}" />
+						<pathelement path="${module.input.src.shared}" />
+						<pathelement path="${module.input.src.gwt}" />
+						<pathelement path="${module.dependencies.path}" />
+						<pathelement path="${module.libs.path}" />
+						<pathelement path="${opencms.input}/src" />
+						<pathelement path="${opencms.input}/src-gwt" />
+						<pathelement path="${opencms.input.gwt}" />
+					</classpath>
+				</javac>
+				<copy todir="${module.output.gwt.client.classes}/${module.package}">
+					<fileset dir="${module.input.src.gwt}/${module.package}" includes="${jar.includes.single}" excludes="${jar.gwt.excludes}" />
+				</copy>
+				<mkdir dir="${module.output.jar}" />
+				<jar jarfile="${module.output.jar}/${module.name}_${module.version}_client.jar" 
+					basedir="${module.output.gwt.client.classes}" 
+					includes="${module.package}/**" />
+
+		    	<!-- create Client Source-Archive for other gwt projects. -->
+				<echo message="Create Client Source-Archive for other gwt projects." />
+		    	<delete file="${module.output.jar}/${module.name}_${module.version}_client_sources.jar" failonerror="no"/>
+				<mkdir dir="${module.output.jar}" />
+		        <jar destfile="${module.output.jar}/${module.name}_${module.version}_client_sources.jar">
+		        	<zipfileset dir="${module.input.src.gwt}" includes="${module.package}/**" />
+		        </jar>
+
 			</then>
 		</if>
 	</target>
@@ -922,33 +974,75 @@
 	</target>
 	
     <target name="maven-install" depends="maven-read-manifest, maven-create-or-replace-module-pom" description="install the OpenCms-Artifacts into the locale Maven Repository">
-		
+
     	<if>
 			<and>
 				<available file="${module.output.jar}/${module.name}.jar" />
 				<available file="${module.output.jar}/${module.name}_${module.version}_sources.jar" />
 			</and>
 			<then>
-				<!-- Jar and Java-Sources are available -->
-				<echo message="install module '${module.name}-${module.version}' (Module-zip, Classes-Jar, Sources-Jar, Javadoc-Jar)" />
-				<artifact:pom id="pom-module" file="${module.input}/pom.xml" />
-				<artifact:install file="${module.output.jar}/${module.name}.jar">
-					<pom refid="pom-module"/>
-					<attach file="${module.output.jar}/${module.name}_${module.version}_javadoc.jar" type="jar" classifier="javadoc" />
-					<attach file="${module.output.jar}/${module.name}_${module.version}_sources.jar" type="jar" classifier="sources" />
-					<attach file="${module.output.zip}/${module.name}_${module.version}.zip" type="zip" classifier="opencms-module" />
-				</artifact:install>
+
+		    	<if>
+					<and>
+						<available file="${module.output.jar}/${module.name}_${module.version}_client.jar" />
+						<available file="${module.output.jar}/${module.name}_${module.version}_client_sources.jar" />
+					</and>
+					<then>
+						<!-- Jar and Java-Sources are available with GWT client JAR and GWT Client Sources -->
+						<echo message="install module '${module.name}-${module.version}-client' Client-Jar, Client-Sources-Jar)" />
+						<artifact:pom id="pom-module" file="${module.input}/pom.xml" />
+						<artifact:install file="${module.output.jar}/${module.name}.jar">
+							<pom refid="pom-module"/>
+							<attach file="${module.output.jar}/${module.name}_${module.version}_javadoc.jar" type="jar" classifier="javadoc" />
+							<attach file="${module.output.jar}/${module.name}_${module.version}_sources.jar" type="jar" classifier="sources" />
+							<attach file="${module.output.zip}/${module.name}_${module.version}.zip" type="zip" classifier="opencms-module" />
+							<attach file="${module.output.jar}/${module.name}_${module.version}_client.jar" type="jar" classifier="client" />
+							<attach file="${module.output.jar}/${module.name}_${module.version}_client_sources.jar" type="jar" classifier="client-sources" />
+						</artifact:install>
+					</then>
+					<else>
+						<!-- Jar and Java-Sources are available -->
+						<echo message="install module '${module.name}-${module.version}-client' Client-Jar, Client-Sources-Jar)" />
+						<artifact:pom id="pom-module" file="${module.input}/pom.xml" />
+						<artifact:install file="${module.output.jar}/${module.name}.jar">
+							<pom refid="pom-module"/>
+							<attach file="${module.output.jar}/${module.name}_${module.version}_javadoc.jar" type="jar" classifier="javadoc" />
+							<attach file="${module.output.jar}/${module.name}_${module.version}_sources.jar" type="jar" classifier="sources" />
+							<attach file="${module.output.zip}/${module.name}_${module.version}.zip" type="zip" classifier="opencms-module" />
+						</artifact:install>
+					</else>
+				</if>
 			</then>
 			<else>
-				<!-- Install OpenCms-Module ZIP Without JAR and Java-Sources -->
-				<echo message="install module '${module.name}-${module.version}' (Module-zip)" />
-				<artifact:pom id="pom-module" file="${module.input}/pom.xml" />
-				<artifact:install file="${opencms.input.warfiles}/update/empty.jar">
-					<pom refid="pom-module"/>
-					<attach file="${module.output.zip}/${module.name}_${module.version}.zip" type="zip" classifier="opencms-module" />
-				</artifact:install>
+		    	<if>
+					<and>
+						<available file="${module.output.jar}/${module.name}_${module.version}_client.jar" />
+						<available file="${module.output.jar}/${module.name}_${module.version}_client_sources.jar" />
+					</and>
+					<then>
+						<!-- Install OpenCms-Module ZIP Without JAR and Java-Sources But with GWT client JAR and GWT Client Sources -->
+						<echo message="install module '${module.name}-${module.version}' (Module-zip)" />
+						<artifact:pom id="pom-module" file="${module.input}/pom.xml" />
+						<artifact:install file="${opencms.input.warfiles}/update/empty.jar">
+							<pom refid="pom-module"/>
+							<attach file="${module.output.zip}/${module.name}_${module.version}.zip" type="zip" classifier="opencms-module" />
+							<attach file="${module.output.jar}/${module.name}_${module.version}_client.jar" type="jar" classifier="client" />
+							<attach file="${module.output.jar}/${module.name}_${module.version}_client_sources.jar" type="jar" classifier="client-sources" />
+						</artifact:install>
+					</then>
+					<else>
+						<!-- Install OpenCms-Module ZIP Without JAR and Java-Sources -->
+						<echo message="install module '${module.name}-${module.version}' (Module-zip)" />
+						<artifact:pom id="pom-module" file="${module.input}/pom.xml" />
+						<artifact:install file="${opencms.input.warfiles}/update/empty.jar">
+							<pom refid="pom-module"/>
+							<attach file="${module.output.zip}/${module.name}_${module.version}.zip" type="zip" classifier="opencms-module" />
+						</artifact:install>
+					</else>
+				</if>
 			</else>
 		</if>
+
 		
 		<delete file="${module.input}/pom.xml" failonerror="false" />
     </target>
@@ -1046,6 +1140,39 @@
 			</else>
 		</if>
 
+		<if>
+			<and>
+				<available file="${module.output.jar}/${module.name}_${module.version}_client.jar" />
+				<available file="${module.output.jar}/${module.name}_${module.version}_client_sources.jar" />
+			</and>
+			<then>
+				<!-- Jar and Java-Sources are available -->
+				<echo message="deploy module '${module.name}-${module.version}' (GWT Client-Jar, GWT Client-Sources-Jar)" />
+		    	
+
+				<!-- sign and deploy the Client-Jar artifact -->
+				<artifact:mvn>
+					<arg value="org.apache.maven.plugins:maven-gpg-plugin:1.3:sign-and-deploy-file" />
+					<arg value="-Durl=${maven-staging-repository-url}" />
+					<arg value="-DrepositoryId=${maven-staging-repository-id}" />
+					<arg value="-DpomFile=${module.input}/pom.xml" />
+					<arg value="-Dfile=${module.output.jar}/${module.name}_${module.version}_client.jar" />
+					<arg value="-Dclassifier=client" />
+		            <arg value="-Pgpg" />
+				</artifact:mvn>
+				<!-- sign and deploy the Client-Sources-Jar artifact -->
+				<artifact:mvn>
+					<arg value="org.apache.maven.plugins:maven-gpg-plugin:1.3:sign-and-deploy-file" />
+					<arg value="-Durl=${maven-staging-repository-url}" />
+					<arg value="-DrepositoryId=${maven-staging-repository-id}" />
+					<arg value="-DpomFile=${module.input}/pom.xml" />
+					<arg value="-Dfile=${module.output.jar}/${module.name}_${module.version}_client_sources.jar" />
+					<arg value="-Dclassifier=client-sources" />
+		            <arg value="-Pgpg" />
+				</artifact:mvn>
+			</then>
+		</if>
+    	
 		<delete file="${module.input}/pom.xml" failonerror="false" />
 		<delete file="${module.input}/pom.xml.asc" failonerror="false" />
 		<delete file="${opencms.input.warfiles}/update/empty.jar.asc" failonerror="false" />
