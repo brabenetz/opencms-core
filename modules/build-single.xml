@@ -503,7 +503,7 @@
 					debug="on" 
 					optimize="on" 
 					deprecation="on" 
-					includes="${module.package}/client/**.java" 
+					includes="${module.package}/client/**/*.java" 
 					source="1.5" 
 					target="${java.target.version}">
 
