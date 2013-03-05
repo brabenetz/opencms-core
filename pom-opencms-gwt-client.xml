@@ -1,11 +1,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.opencms</groupId>
-	<artifactId>opencms-gwt-client</artifactId>
+	<groupId>org.opencms.modules</groupId>
+	<artifactId>org.opencms.gwt-client</artifactId>
 	<packaging>jar</packaging>
 	<version>8.5.1</version>
-	<name>opencms-gwt-client</name>
+	<name>org.opencms.gwt-client</name>
 	<url>http://alkacon.com</url>
 
 	<description>
@@ -42,7 +42,7 @@
 			<organization>Alkacon Software GmbH</organization>
 			<organizationUrl>http://www.alkacon.com</organizationUrl>
 			<roles>
-				<role>Geschäftsführer</role>
+				<role>Geschï¿½ftsfï¿½hrer</role>
 				<role>Core Developer</role>
 			</roles>
 			<timezone>+1</timezone>
@@ -127,9 +127,6 @@
 					<includes>
 						<include>org/opencms/gwt/**</include>
 					</includes>
-					<excludes>
-						<include>**/super_src/**</include>
-					</excludes>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -222,25 +219,25 @@
 		</dependency>
 	
 		<!-- ########################### -->
-		<!-- SCOPE compile -->
+		<!-- SCOPE provided -->
 		<!-- ########################### -->
 		<dependency>
 			<groupId>org.opencms</groupId>
 			<artifactId>opencms-core</artifactId>
 			<version>8.5.1</version>
-			<scope>compile</scope>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-user</artifactId>
 			<version>${gwtVersion}</version>
-			<scope>compile</scope>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-dev</artifactId>
 			<version>${gwtVersion}</version>
-			<scope>compile</scope>
+			<scope>provided</scope>
 		</dependency>
 	
 		<!-- ########################### -->
