@@ -4,7 +4,7 @@
 	<groupId>org.opencms.modules</groupId>
 	<artifactId>org.opencms.gwt-client</artifactId>
 	<packaging>jar</packaging>
-	<version>8.5.1</version>
+	<version>8.5.2</version>
 	<name>org.opencms.gwt-client</name>
 	<url>http://alkacon.com</url>
 
@@ -224,7 +224,7 @@
 		<dependency>
 			<groupId>org.opencms</groupId>
 			<artifactId>opencms-core</artifactId>
-			<version>8.5.1</version>
+			<version>8.5.2</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -252,7 +252,7 @@
 		<dependency>
 			<groupId>org.opencms</groupId>
 			<artifactId>opencms-core</artifactId>
-			<version>8.5.1</version>
+			<version>8.5.2</version>
 			<classifier>sources</classifier>
 			<scope>test</scope>
 		</dependency>
