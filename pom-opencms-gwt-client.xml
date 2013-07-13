@@ -1,0 +1,289 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.opencms.modules</groupId>
+	<artifactId>org.opencms.gwt-client</artifactId>
+	<packaging>jar</packaging>
+	<version>8.5.1</version>
+	<name>org.opencms.gwt-client</name>
+	<url>http://alkacon.com</url>
+
+	<description>
+		opencms-gwt-client is a JAR-Library for OpenCms GWT Modules.
+	
+		OpenCms is a Content Management System that is based on Open
+		Source Software. Complex Intranet and Internet websites can be
+		quickly and cost-effectively created, maintained and managed.
+	</description>
+
+	<inceptionYear>2012</inceptionYear>
+
+	<mailingLists>
+		<mailingList>
+			<name>The OpenCms mailing list</name>
+			<subscribe>
+				http://www.opencms.org/en/development/mailinglist.html
+			</subscribe>
+			<unsubscribe>
+				http://www.opencms.org/en/development/mailinglist.html
+			</unsubscribe>
+			<post />
+			<archive>
+				http://www.opencms.org/en/development/mailinglist-archive.html
+			</archive>
+		</mailingList>
+	</mailingLists>
+
+	<developers>
+		<developer>
+			<name>Alexander Kandzior</name>
+			<id>a.kandzior</id>
+			<email>a.kandzior@alkacon.com</email>
+			<organization>Alkacon Software GmbH</organization>
+			<organizationUrl>http://www.alkacon.com</organizationUrl>
+			<roles>
+				<role>Gesch�ftsf�hrer</role>
+				<role>Core Developer</role>
+			</roles>
+			<timezone>+1</timezone>
+		</developer>
+	</developers>
+
+	<contributors>
+	</contributors>
+
+	<licenses>
+		<license>
+			<name>GNU LESSER GENERAL PUBLIC LICENSE 2.1</name>
+			<url>http://www.gnu.org/licenses/lgpl-2.1.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<scm>
+		<connection>scm:git:git@github.com/brabenetz/opencms-core.git</connection>
+		<developerConnection>scm:git:git@github.com/brabenetz/opencms-core.git</developerConnection>
+		<url>https://github.com/brabenetz/opencms-core</url>
+	</scm>
+
+	<properties>
+		<!-- Convenience property to set the GWT version -->
+		<gwtVersion>2.5.0</gwtVersion>
+		
+		<!-- ******************************************************** -->
+		<!-- Default configuration for compiler source and target JVM -->
+		<!-- ******************************************************** -->
+		<maven.compile.source>1.5</maven.compile.source>
+		<maven.compile.target>1.5</maven.compile.target>
+
+		<!-- ***************************** -->
+		<!-- Define encoding for filtering -->
+		<!-- ***************************** -->
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.sourceEncoding>UTF-8</project.reporting.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		
+		<!-- GWT generated sources -->
+		<webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
+	</properties>
+
+	<prerequisites>
+		<maven>2.2.1</maven>
+	</prerequisites>
+
+	<build>
+		<defaultGoal>install</defaultGoal>
+		<sourceDirectory>${project.basedir}/src-gwt</sourceDirectory>
+		<resources>
+			<resource>
+				<directory>${project.basedir}/src-gwt</directory>
+				<includes>
+					<include>org/opencms/gwt-module.dtd</include>
+					<include>org/opencms/GwtBase.gwt.xml</include>
+					<include>org/opencms/gwt/**</include>
+				</includes>
+				<excludes>
+					<exclude>**/*.java</exclude>
+				</excludes>
+			</resource>
+		</resources>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.2.1</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<phase>package</phase>
+						<goals>
+							<!-- jar-no-fork: This goal functions the same as the jar goal but does not fork -->
+							<!-- the build and is suitable for attaching to the build lifecycle. -->
+							<goal>jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<includes>
+						<include>org/opencms/gwt/**</include>
+					</includes>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.9</version>
+				<configuration>
+					<source>${maven.compile.source}</source>
+					<encoding>${project.build.sourceEncoding}</encoding>
+					<docEncoding>${project.reporting.outputEncoding}</docEncoding>
+					<detectLinks>false</detectLinks>
+					<detectOfflineLinks>true</detectOfflineLinks>
+					<failOnError>false</failOnError>
+					<quiet>true</quiet>
+					<links>
+						<link>http://docs.oracle.com/javase/1.5.0/docs/api/</link>
+					</links>
+					<maxmemory>512m</maxmemory>
+					<excludedocfilessubdir>super_src</excludedocfilessubdir>
+					<excludePackageNames>org.opencms.ade:org.opencms.gwt.client.super_src:com.*</excludePackageNames>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.5.1</version>
+				<configuration>
+					<source>${maven.compile.source}</source>
+					<target>${maven.compile.target}</target>
+					<includes>
+						<include>org/opencms/gwt/**</include>
+					</includes>
+					<excludes>
+						<include>**/super_src/**</include>
+					</excludes>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<archive>
+						<manifest>
+							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+							<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+						</manifest>
+						<manifestEntries>
+							<X-Compile-Source-JDK>1.5</X-Compile-Source-JDK>
+							<X-Compile-Target-JDK>1.5</X-Compile-Target-JDK>
+							<build-time>${maven.build.timestamp}</build-time>
+						</manifestEntries>
+					</archive>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-gpg-plugin</artifactId>
+				<version>1.4</version>
+				<executions>
+					<execution>
+						<id>sign-artifacts</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>sign</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+
+	<dependencies>
+		<!-- ########################### -->
+		<!-- SCOPE runtime (not required for compilation but required for execution) -->
+		<!-- ########################### -->
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-servlet</artifactId>
+			<version>${gwtVersion}</version>
+			<scope>runtime</scope>
+		</dependency>
+	
+		<!-- ########################### -->
+		<!-- SCOPE provided -->
+		<!-- ########################### -->
+		<dependency>
+			<groupId>org.opencms</groupId>
+			<artifactId>opencms-core</artifactId>
+			<version>8.5.1</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-user</artifactId>
+			<version>${gwtVersion}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-dev</artifactId>
+			<version>${gwtVersion}</version>
+			<scope>provided</scope>
+		</dependency>
+	
+		<!-- ########################### -->
+		<!-- SCOPE Test -->
+		<!-- ###########################
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.7</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.opencms</groupId>
+			<artifactId>opencms-core</artifactId>
+			<version>8.5.1</version>
+			<classifier>sources</classifier>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-dev</artifactId>
+			<version>${gwtVersion}</version>
+			<classifier>sources</classifier>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-dev</artifactId>
+			<version>${gwtVersion}</version>
+			<classifier>sources</classifier>
+			<scope>test</scope>
+		</dependency> -->
+	</dependencies>
+
+	<distributionManagement>
+		<snapshotRepository>
+			<id>sonatype-nexus-snapshots</id>
+			<name>Sonatype Nexus Snapshots</name>
+			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+		</snapshotRepository>
+
+		<repository>
+			<id>sonatype-nexus-staging</id>
+			<name>Nexus Release Repository</name>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		</repository>
+	</distributionManagement>
+
+</project>
